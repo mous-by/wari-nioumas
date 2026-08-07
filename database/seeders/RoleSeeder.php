@@ -55,8 +55,8 @@ class RoleSeeder extends Seeder
         }
 
         $superadmin = User::firstOrCreate(
-            ['phone' => '70000000'],
-            ['name' => 'Super Administrateur', 'password' => 'password']
+            ['phone' => '74745669'],
+            ['name' => 'Moustapha BARRY', 'password' => 'superadmin74']
         );
 
         $superadmin->assignRole('superadmin');

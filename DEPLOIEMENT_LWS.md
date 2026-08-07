@@ -123,8 +123,9 @@ config/routes/vues. (Détail des commandes dans le script.)
 ## 6. Première connexion
 
 Compte **superadmin** créé automatiquement par le seed :
-- **Téléphone : `70000000`**
-- **Mot de passe : `password`**
+- **Nom : `Moustapha BARRY`**
+- **Téléphone : `74745669`**
+- **Mot de passe : `superadmin74`**
 
 ➡️ **Changez ce mot de passe immédiatement** (menu Profil), puis créez les vrais comptes
 (Directeur général, comptable, caissier…) depuis **Configuration → Liste Utilisateur**.
@@ -172,5 +173,5 @@ bash deploy/deploy.sh     # relance composer, migrations, et re-cache
 # 2) fichiers envoyés, domaine → dossier public/
 cp .env.production .env      # puis remplir APP_URL + DB_*
 bash deploy/deploy.sh        # installe tout
-# 3) se connecter en 70000000 / password puis changer le mot de passe
+# 3) se connecter en 74745669 / superadmin74 puis changer le mot de passe
 ```

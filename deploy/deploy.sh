@@ -33,5 +33,5 @@ php artisan view:cache
 
 echo ""
 echo "✅ Déploiement terminé."
-echo "   Connexion superadmin par défaut : téléphone 70000000 / mot de passe password"
+echo "   Connexion superadmin par défaut : téléphone 74745669 / mot de passe superadmin74"
 echo "   → CHANGEZ ce mot de passe immédiatement après la première connexion."
