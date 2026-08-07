@@ -6,6 +6,7 @@ use App\Http\Requests\StoreVehiculeRequest;
 use App\Http\Requests\UpdateVehiculeRequest;
 use App\Models\Vehicule;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class VehiculeController extends Controller
@@ -58,8 +59,14 @@ class VehiculeController extends Controller
 
     public function destroy(Vehicule $vehicule): RedirectResponse
     {
-        $vehicule->delete();
+        // Le véhicule emporte avec lui ses affectations et son historique d'états,
+        // pour ne laisser aucune référence orpheline (ex. page Affectations).
+        DB::transaction(function () use ($vehicule) {
+            $vehicule->affectations()->delete();
+            $vehicule->etatHistoriques()->delete();
+            $vehicule->delete();
+        });
 
-        return back()->with('status', 'Véhicule supprimé avec succès.');
+        return back()->with('status', 'Véhicule et ses affectations supprimés avec succès.');
     }
 }

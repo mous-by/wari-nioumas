@@ -130,7 +130,7 @@
                     @foreach ($versements as $versement)
                         <tr>
                             <td>{{ $versement->date_versement->format('d/m/Y') }}</td>
-                            <td>{{ $versement->chauffeur->nom_complet }}</td>
+                            <td>{{ $versement->chauffeur?->nom_complet ?? '— supprimé' }}</td>
                             <td>{{ $fmt($versement->montant) }}</td>
                             <td>{{ $versement->observations ?? '—' }}</td>
                             <td>
@@ -138,7 +138,7 @@
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-versement-button"
                                        data-bs-toggle="modal" data-bs-target="#editVersementModal"
                                        data-url="{{ route('recettes.update', $versement) }}"
-                                       data-chauffeur="{{ $versement->chauffeur->nom_complet }}"
+                                       data-chauffeur="{{ $versement->chauffeur?->nom_complet }}"
                                        data-date_versement="{{ $versement->date_versement->format('Y-m-d') }}"
                                        data-montant="{{ $versement->montant }}"
                                        data-observations="{{ $versement->observations }}"

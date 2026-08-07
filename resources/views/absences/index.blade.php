@@ -47,7 +47,7 @@
                 <tbody>
                     @foreach ($absences as $absence)
                         <tr>
-                            <td><a href="{{ route('chauffeurs.show', $absence->chauffeur) }}">{{ $absence->chauffeur->nom_complet }}</a></td>
+                            <td>@if ($absence->chauffeur)<a href="{{ route('chauffeurs.show', $absence->chauffeur) }}">{{ $absence->chauffeur->nom_complet }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
                             <td>{{ $absence->date_debut->format('d/m/Y') }} → {{ $absence->date_fin->format('d/m/Y') }}</td>
                             <td>{{ $absence->nombreJours() }}</td>
                             <td>{{ $absence->motif }}</td>
@@ -68,7 +68,7 @@
                                         <a href="javascript:;" class="btn btn-primary btn-sm edit-absence-button" title="Modifier"
                                            data-bs-toggle="modal" data-bs-target="#editAbsenceModal"
                                            data-url="{{ route('absences.update', $absence) }}"
-                                           data-chauffeur="{{ $absence->chauffeur->nom_complet }}"
+                                           data-chauffeur="{{ $absence->chauffeur?->nom_complet }}"
                                            data-date_debut="{{ $absence->date_debut->format('Y-m-d') }}"
                                            data-date_fin="{{ $absence->date_fin->format('Y-m-d') }}"
                                            data-motif="{{ $absence->motif }}">

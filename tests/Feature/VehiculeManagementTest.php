@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Affectation;
+use App\Models\Chauffeur;
 use App\Models\Vehicule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -85,5 +87,22 @@ class VehiculeManagementTest extends TestCase
         $this->actingAs($user)->delete("/vehicules/{$vehicule->id}")->assertForbidden();
 
         $this->assertNotSoftDeleted('vehicules', ['id' => $vehicule->id]);
+    }
+
+    public function test_deleting_a_vehicule_removes_its_affectations_and_page_still_loads(): void
+    {
+        $user = $this->userWithRole('responsable_parc');
+        $vehicule = Vehicule::factory()->create();
+        $chauffeur = Chauffeur::factory()->create();
+        $affectation = Affectation::factory()->create([
+            'vehicule_id' => $vehicule->id, 'chauffeur_id' => $chauffeur->id,
+        ]);
+
+        $this->actingAs($user)->delete("/vehicules/{$vehicule->id}")->assertRedirect();
+
+        // l'affectation part avec le véhicule (plus de référence orpheline)
+        $this->assertDatabaseMissing('affectations', ['id' => $affectation->id]);
+        // et la page Affectations ne plante plus
+        $this->actingAs($user)->get('/affectations')->assertOk();
     }
 }

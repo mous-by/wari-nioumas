@@ -6,6 +6,7 @@ use App\Models\Chauffeur;
 use App\Http\Requests\StoreChauffeurRequest;
 use App\Http\Requests\UpdateChauffeurRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ChauffeurController extends Controller
@@ -59,8 +60,13 @@ class ChauffeurController extends Controller
 
     public function destroy(Chauffeur $chauffeur): RedirectResponse
     {
-        $chauffeur->delete();
+        // Le chauffeur emporte ses affectations et son historique de statuts.
+        DB::transaction(function () use ($chauffeur) {
+            $chauffeur->affectations()->delete();
+            $chauffeur->statutHistoriques()->delete();
+            $chauffeur->delete();
+        });
 
-        return back()->with('status', 'Chauffeur supprimé avec succès.');
+        return back()->with('status', 'Chauffeur et ses affectations supprimés avec succès.');
     }
 }

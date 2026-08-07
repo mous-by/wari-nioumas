@@ -43,8 +43,8 @@
                 <tbody>
                     @foreach ($affectations as $affectation)
                         <tr>
-                            <td><a href="{{ route('vehicules.show', $affectation->vehicule) }}">{{ $affectation->vehicule->immatriculation }}</a></td>
-                            <td><a href="{{ route('chauffeurs.show', $affectation->chauffeur) }}">{{ $affectation->chauffeur->nom_complet }}</a></td>
+                            <td>@if ($affectation->vehicule)<a href="{{ route('vehicules.show', $affectation->vehicule) }}">{{ $affectation->vehicule->immatriculation }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
+                            <td>@if ($affectation->chauffeur)<a href="{{ route('chauffeurs.show', $affectation->chauffeur) }}">{{ $affectation->chauffeur->nom_complet }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
                             <td>{{ number_format((float) $affectation->montant_journalier, 0, ',', ' ') }} FCFA</td>
                             <td>{{ $affectation->date_debut->format('d/m/Y') }}</td>
                             <td>{{ $affectation->date_fin?->format('d/m/Y') ?? '—' }}</td>
@@ -60,8 +60,8 @@
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-affectation-button"
                                        data-bs-toggle="modal" data-bs-target="#editAffectationModal"
                                        data-url="{{ route('affectations.update', $affectation) }}"
-                                       data-vehicule="{{ $affectation->vehicule->immatriculation }}"
-                                       data-chauffeur="{{ $affectation->chauffeur->nom_complet }}"
+                                       data-vehicule="{{ $affectation->vehicule?->immatriculation }}"
+                                       data-chauffeur="{{ $affectation->chauffeur?->nom_complet }}"
                                        data-montant_journalier="{{ $affectation->montant_journalier }}"
                                        data-date_debut="{{ $affectation->date_debut->format('Y-m-d') }}"
                                        data-observations="{{ $affectation->observations }}"

@@ -151,5 +151,12 @@
                 </a>
             </li>
         @endcan
+
+        <li>
+            <a href="{{ route('documentation') }}" class="{{ request()->routeIs('documentation') ? 'mm-active' : '' }}">
+                <div class="parent-icon"><i class='bx bx-book-open'></i></div>
+                <div class="menu-title">Documentation</div>
+            </a>
+        </li>
     </ul>
 </div>

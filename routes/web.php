@@ -40,6 +40,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/configuration/signature', [\App\Http\Controllers\SignatureController::class, 'edit'])->name('signature.edit');
     Route::put('/configuration/signature', [\App\Http\Controllers\SignatureController::class, 'update'])->name('signature.update');
 
+    // Documentation / guide d'utilisation (accessible à tous les utilisateurs connectés)
+    Route::view('/documentation', 'documentation')->name('documentation');
+
     Route::middleware('permission:utilisateurs.voir')->group(function () {
         Route::get('/utilisateurs', [UserController::class, 'index'])->name('users.index');
     });
