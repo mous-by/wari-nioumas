@@ -8,7 +8,6 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
-        "laravel-lang/lang": "^12.17",
         "laravel/framework": "^13.9",
         "laravel/tinker": "^2.10.1|^3.0",
         "maatwebsite/excel": "^3.1",
