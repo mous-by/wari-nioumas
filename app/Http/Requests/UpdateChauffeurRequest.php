@@ -18,6 +18,8 @@ class UpdateChauffeurRequest extends FormRequest
         return [
             'nom' => ['required', 'string', 'max:255'],
             'prenom' => ['required', 'string', 'max:255'],
+            'date_naissance' => ['nullable', 'date', 'before:today'],
+            'lieu_naissance' => ['nullable', 'string', 'max:255'],
             'telephone' => ['required', 'string', new MalianPhone(), Rule::unique('chauffeurs', 'telephone')->ignore($this->route('chauffeur'))],
             'adresse' => ['nullable', 'string', 'max:255'],
             'nina' => ['required', 'string', 'max:50', Rule::unique('chauffeurs', 'nina')->ignore($this->route('chauffeur'))],

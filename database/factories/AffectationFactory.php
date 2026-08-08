@@ -23,6 +23,7 @@ class AffectationFactory extends Factory
             'vehicule_id' => Vehicule::factory(),
             'chauffeur_id' => Chauffeur::factory(),
             'montant_journalier' => fake()->randomElement([10000, 12500, 15000]),
+            'periodicite' => 'journalier',
             'date_debut' => fake()->dateTimeBetween('-1 year', 'now'),
             'date_fin' => null,
             'motif_fin' => null,

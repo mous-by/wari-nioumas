@@ -15,6 +15,7 @@ class UpdateAffectationRequest extends FormRequest
     {
         return [
             'montant_journalier' => ['required', 'numeric', 'min:0'],
+            'periodicite' => ['required', 'in:'.implode(',', \App\Models\Affectation::PERIODICITES)],
             'date_debut' => ['required', 'date'],
             'observations' => ['nullable', 'string'],
         ];

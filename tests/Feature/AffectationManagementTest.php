@@ -30,6 +30,7 @@ class AffectationManagementTest extends TestCase
             'chauffeur_id' => $chauffeur->id,
             'date_debut' => now()->toDateString(),
             'montant_journalier' => 15000,
+            'periodicite' => 'journalier',
         ]);
 
         $response->assertRedirect(route('affectations.index'));
@@ -56,6 +57,7 @@ class AffectationManagementTest extends TestCase
             'chauffeur_id' => $chauffeurB->id,
             'date_debut' => now()->toDateString(),
             'montant_journalier' => 15000,
+            'periodicite' => 'journalier',
         ])->assertRedirect(route('affectations.index'));
 
         $this->assertNotNull($premiere->fresh()->date_fin);
@@ -82,6 +84,7 @@ class AffectationManagementTest extends TestCase
             'chauffeur_id' => $chauffeur->id,
             'date_debut' => now()->toDateString(),
             'montant_journalier' => 15000,
+            'periodicite' => 'journalier',
         ])->assertRedirect(route('affectations.index'));
 
         $this->assertNotNull($premiere->fresh()->date_fin);
@@ -107,9 +110,30 @@ class AffectationManagementTest extends TestCase
         $this->actingAs($user)->put("/affectations/{$affectation->id}", [
             'date_debut' => $affectation->date_debut->toDateString(),
             'montant_journalier' => 18000,
+            'periodicite' => 'journalier',
             'observations' => 'Montant corrigé',
         ])->assertRedirect(route('affectations.index'));
 
         $this->assertEquals(18000, $affectation->fresh()->montant_journalier);
+    }
+
+    public function test_monthly_affectation_accumulates_a_flat_forfait_per_period(): void
+    {
+        \Illuminate\Support\Carbon::setTestNow(\Illuminate\Support\Carbon::create(2026, 5, 10));
+
+        $chauffeur = Chauffeur::factory()->create();
+
+        Affectation::factory()->create([
+            'chauffeur_id' => $chauffeur->id,
+            'montant_journalier' => 150000,
+            'periodicite' => 'mensuel',
+            'date_debut' => now()->subMonths(3), // 2026-02-10
+            'date_fin' => null,
+        ]);
+
+        // 3 mois écoulés → 4 forfaits de 150 000, quel que soit le nombre de jours.
+        $this->assertEquals(600000, $chauffeur->fresh()->montantDu());
+
+        \Illuminate\Support\Carbon::setTestNow();
     }
 }

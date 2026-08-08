@@ -15,6 +15,8 @@ class Chauffeur extends Model
         'matricule',
         'nom',
         'prenom',
+        'date_naissance',
+        'lieu_naissance',
         'telephone',
         'adresse',
         'nina',
@@ -28,9 +30,31 @@ class Chauffeur extends Model
     protected function casts(): array
     {
         return [
+            'date_naissance' => 'date',
             'permis_date_validite' => 'date',
             'date_embauche' => 'date',
         ];
+    }
+
+    /**
+     * Naissance formatée « 10/07/1992 à Bamako ». La préposition « à » n'apparaît
+     * que si la date de naissance est connue ; sinon on affiche ce qui est
+     * disponible (date seule ou lieu seul), ou null si rien n'est renseigné.
+     */
+    protected function naissance(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: function () {
+                $date = $this->date_naissance?->format('d/m/Y');
+                $lieu = $this->lieu_naissance ? trim($this->lieu_naissance) : null;
+
+                if ($date && $lieu) {
+                    return $date.' à '.$lieu;
+                }
+
+                return $date ?: $lieu;
+            },
+        );
     }
 
     protected static function booted(): void
@@ -93,10 +117,23 @@ class Chauffeur extends Model
     }
 
     /**
+     * Suffixe de périodicité de l'affectation active (« / jour », « / mois »…).
+     */
+    public function periodiciteActuelleSuffixe(): string
+    {
+        return $this->affectationActive?->periodiciteSuffixe() ?? '/ jour';
+    }
+
+    /**
      * Montant total DÛ (« compte à rebours ») accumulé automatiquement jusqu'à
-     * la date donnée (aujourd'hui par défaut). Pour chaque affectation, on
-     * compte les jours écoulés (montant journalier × jours), puis on retranche
-     * les jours d'absence acceptée qui tombent dans cette période.
+     * la date donnée (aujourd'hui par défaut).
+     *
+     * - Affectation JOURNALIÈRE (camions) : on compte les jours écoulés
+     *   (montant × jours) puis on retranche les jours d'absence acceptée.
+     * - Affectation PÉRIODIQUE mensuelle / trimestrielle / semestrielle
+     *   (camionettes) : forfait dû en entier au début de chaque période ; un
+     *   nouveau forfait s'ajoute à chaque période commencée. Les absences ne
+     *   réduisent pas le forfait.
      */
     public function montantDu(?Carbon $jusquA = null): float
     {
@@ -122,6 +159,23 @@ class Chauffeur extends Model
                 $fin = $jusquA->copy();
             }
 
+            $moisParPeriode = $affectation->moisParPeriode();
+
+            if ($moisParPeriode > 0) {
+                // Forfait par période (camionettes) : nombre de périodes commencées.
+                $moisEcoules = ($fin->year - $debut->year) * 12 + ($fin->month - $debut->month);
+                if ($fin->day < $debut->day) {
+                    $moisEcoules--;
+                }
+                $moisEcoules = max(0, $moisEcoules);
+
+                $periodes = intdiv($moisEcoules, $moisParPeriode) + 1;
+                $total += $periodes * (float) $affectation->montant_journalier;
+
+                continue;
+            }
+
+            // Comportement journalier d'origine (camions) — inchangé.
             $jours = $debut->diffInDays($fin) + 1; // bornes incluses
 
             $joursAbsence = 0;

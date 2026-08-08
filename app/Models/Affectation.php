@@ -9,10 +9,18 @@ class Affectation extends Model
 {
     use HasFactory;
 
+    /**
+     * Périodicités possibles du montant. « journalier » = comportement d'origine
+     * (camions : montant × jours). Les autres sont des forfaits par période
+     * (camionettes) : le montant est dû en entier au début de chaque période.
+     */
+    public const PERIODICITES = ['journalier', 'mensuel', 'trimestriel', 'semestriel'];
+
     protected $fillable = [
         'vehicule_id',
         'chauffeur_id',
         'montant_journalier',
+        'periodicite',
         'date_debut',
         'date_fin',
         'motif_fin',
@@ -47,5 +55,35 @@ class Affectation extends Model
     public function estActive(): bool
     {
         return is_null($this->date_fin);
+    }
+
+    /**
+     * Nombre de mois d'une période selon la périodicité (0 = journalier).
+     */
+    public function moisParPeriode(): int
+    {
+        return [
+            'mensuel' => 1,
+            'trimestriel' => 3,
+            'semestriel' => 6,
+        ][$this->periodicite] ?? 0;
+    }
+
+    /**
+     * Suffixe lisible du montant, ex. « / jour », « / mois ».
+     */
+    public function periodiciteSuffixe(): string
+    {
+        return [
+            'journalier' => '/ jour',
+            'mensuel' => '/ mois',
+            'trimestriel' => '/ trimestre',
+            'semestriel' => '/ semestre',
+        ][$this->periodicite] ?? '/ jour';
+    }
+
+    public function periodiciteLabel(): string
+    {
+        return ucfirst($this->periodicite ?? 'journalier');
     }
 }

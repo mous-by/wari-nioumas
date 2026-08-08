@@ -75,7 +75,7 @@
                 <thead>
                     <tr>
                         <th>CHAUFFEUR</th>
-                        <th>MONTANT / JOUR</th>
+                        <th>MONTANT</th>
                         <th>DÛ (À CE JOUR)</th>
                         <th>VERSÉ</th>
                         <th>SOLDE</th>
@@ -86,7 +86,7 @@
                     @foreach ($comptes as $compte)
                         <tr>
                             <td><a href="{{ route('chauffeurs.show', $compte['chauffeur']) }}">{{ $compte['chauffeur']->nom_complet }}</a></td>
-                            <td>{{ $fmt($compte['montant_journalier']) }}</td>
+                            <td>{{ $fmt($compte['montant_journalier']) }} <small class="text-muted">{{ $compte['periodicite_suffixe'] }}</small></td>
                             <td>{{ $fmt($compte['du']) }}</td>
                             <td>{{ $fmt($compte['verse']) }}</td>
                             <td>

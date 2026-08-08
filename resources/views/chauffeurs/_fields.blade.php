@@ -26,6 +26,17 @@
 
 <div class="row">
     <div class="col-md-6 mb-3">
+        <label for="{{ $prefix }}date_naissance" class="form-label">Date de naissance</label>
+        <input type="date" class="form-control" id="{{ $prefix }}date_naissance" name="date_naissance" value="{{ old('date_naissance') }}">
+    </div>
+    <div class="col-md-6 mb-3">
+        <label for="{{ $prefix }}lieu_naissance" class="form-label">Lieu de naissance</label>
+        <input type="text" class="form-control" id="{{ $prefix }}lieu_naissance" name="lieu_naissance" value="{{ old('lieu_naissance') }}" placeholder="Bamako">
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
         <label for="{{ $prefix }}telephone" class="form-label">Téléphone <span class="text-danger">*</span></label>
         <input type="text" class="form-control" id="{{ $prefix }}telephone" name="telephone" value="{{ old('telephone') }}" placeholder="70000000">
     </div>

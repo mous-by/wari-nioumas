@@ -33,7 +33,7 @@
                     <tr>
                         <th>VEHICULE</th>
                         <th>CHAUFFEUR</th>
-                        <th>MONTANT/JOUR</th>
+                        <th>MONTANT</th>
                         <th>DEBUT</th>
                         <th>FIN</th>
                         <th>STATUT</th>
@@ -45,7 +45,7 @@
                         <tr>
                             <td>@if ($affectation->vehicule)<a href="{{ route('vehicules.show', $affectation->vehicule) }}">{{ $affectation->vehicule->immatriculation }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
                             <td>@if ($affectation->chauffeur)<a href="{{ route('chauffeurs.show', $affectation->chauffeur) }}">{{ $affectation->chauffeur->nom_complet }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
-                            <td>{{ number_format((float) $affectation->montant_journalier, 0, ',', ' ') }} FCFA</td>
+                            <td>{{ number_format((float) $affectation->montant_journalier, 0, ',', ' ') }} FCFA <small class="text-muted">{{ $affectation->periodiciteSuffixe() }}</small></td>
                             <td>{{ $affectation->date_debut->format('d/m/Y') }}</td>
                             <td>{{ $affectation->date_fin?->format('d/m/Y') ?? '—' }}</td>
                             <td>
@@ -63,6 +63,7 @@
                                        data-vehicule="{{ $affectation->vehicule?->immatriculation }}"
                                        data-chauffeur="{{ $affectation->chauffeur?->nom_complet }}"
                                        data-montant_journalier="{{ $affectation->montant_journalier }}"
+                                       data-periodicite="{{ $affectation->periodicite }}"
                                        data-date_debut="{{ $affectation->date_debut->format('Y-m-d') }}"
                                        data-observations="{{ $affectation->observations }}"
                                        title="Modifier">
@@ -123,8 +124,20 @@
                                     <input type="date" class="form-control" id="date_debut" name="date_debut" value="{{ date('Y-m-d') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="montant_journalier" class="form-label">Montant journalier <span class="text-danger">*</span></label>
-                                    <input type="number" step="1" min="0" class="form-control" id="montant_journalier" name="montant_journalier" value="{{ old('montant_journalier', 0) }}" placeholder="FCFA / jour">
+                                    <label for="periodicite" class="form-label">Périodicité <span class="text-danger">*</span></label>
+                                    <select class="single-select form-select" id="periodicite" name="periodicite">
+                                        <option value="journalier" @selected(old('periodicite', 'journalier') === 'journalier')>Journalier (camions)</option>
+                                        <option value="mensuel" @selected(old('periodicite') === 'mensuel')>Mensuel</option>
+                                        <option value="trimestriel" @selected(old('periodicite') === 'trimestriel')>Trimestriel</option>
+                                        <option value="semestriel" @selected(old('periodicite') === 'semestriel')>Semestriel</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="montant_journalier" class="form-label">Montant <span class="text-danger">*</span></label>
+                                    <input type="number" step="1" min="0" class="form-control" id="montant_journalier" name="montant_journalier" value="{{ old('montant_journalier', 0) }}" placeholder="FCFA par période">
+                                    <small class="text-muted">Montant dû par période choisie (jour, mois, trimestre, semestre).</small>
                                 </div>
                             </div>
                             <div class="mb-1">
@@ -171,8 +184,20 @@
                                     <input type="date" class="form-control" name="date_debut" id="edit_date_debut">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="form-label">Montant journalier <span class="text-danger">*</span></label>
+                                    <label class="form-label">Périodicité <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="periodicite" id="edit_periodicite">
+                                        <option value="journalier">Journalier (camions)</option>
+                                        <option value="mensuel">Mensuel</option>
+                                        <option value="trimestriel">Trimestriel</option>
+                                        <option value="semestriel">Semestriel</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Montant <span class="text-danger">*</span></label>
                                     <input type="number" step="1" min="0" class="form-control" name="montant_journalier" id="edit_montant_journalier">
+                                    <small class="text-muted">Montant dû par période choisie.</small>
                                 </div>
                             </div>
                             <div class="mb-1">
@@ -209,6 +234,7 @@
             $('#edit_affectation_libelle').text(data.vehicule + ' — ' + data.chauffeur);
             $('#edit_date_debut').val(data.date_debut);
             $('#edit_montant_journalier').val(data.montant_journalier);
+            $('#edit_periodicite').val(data.periodicite || 'journalier');
             $('#edit_observations').val(data.observations);
         });
 

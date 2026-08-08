@@ -39,6 +39,10 @@
                             <td>{{ $chauffeur->nom_complet }}</td>
                         </tr>
                         <tr>
+                            <th>Né(e) le</th>
+                            <td>{{ $chauffeur->naissance ?: '—' }}</td>
+                        </tr>
+                        <tr>
                             <th>Téléphone</th>
                             <td>{{ $chauffeur->telephone }}</td>
                         </tr>

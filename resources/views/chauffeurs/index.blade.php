@@ -62,6 +62,8 @@
                                        data-matricule="{{ $chauffeur->matricule }}"
                                        data-nom="{{ $chauffeur->nom }}"
                                        data-prenom="{{ $chauffeur->prenom }}"
+                                       data-date_naissance="{{ $chauffeur->date_naissance?->format('Y-m-d') }}"
+                                       data-lieu_naissance="{{ $chauffeur->lieu_naissance }}"
                                        data-telephone="{{ $chauffeur->telephone }}"
                                        data-adresse="{{ $chauffeur->adresse }}"
                                        data-nina="{{ $chauffeur->nina }}"
@@ -153,7 +155,7 @@
         $('.edit-chauffeur-button').on('click', function () {
             const data = $(this).data();
             $('#editChauffeurForm').attr('action', data.url);
-            ['matricule', 'nom', 'prenom', 'telephone', 'adresse', 'nina', 'permis_numero',
+            ['matricule', 'nom', 'prenom', 'date_naissance', 'lieu_naissance', 'telephone', 'adresse', 'nina', 'permis_numero',
              'permis_date_validite', 'date_embauche', 'statut', 'observations'].forEach(function (field) {
                 $('#edit_' + field).val(data[field]);
             });

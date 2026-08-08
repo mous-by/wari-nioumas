@@ -32,6 +32,7 @@ class RecetteController extends Controller
                 return [
                     'chauffeur' => $chauffeur,
                     'montant_journalier' => $chauffeur->montantJournalierActuel(),
+                    'periodicite_suffixe' => $chauffeur->periodiciteActuelleSuffixe(),
                     'du' => $du,
                     'verse' => $verse,
                     'solde' => $du - $verse,
