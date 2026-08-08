@@ -9,8 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('affectations', function (Blueprint $table) {
-            // Périodicité du montant : journalier (camions, comportement existant)
-            // ou forfait mensuel / trimestriel / semestriel (camionettes).
+            // Périodicité du montant, choisie par affectation : journalier
+            // (comportement existant) ou forfait mensuel / trimestriel /
+            // semestriel (ex. camionettes, qui ne se paient pas au jour).
             $table->enum('periodicite', ['journalier', 'mensuel', 'trimestriel', 'semestriel'])
                 ->default('journalier')
                 ->after('montant_journalier');

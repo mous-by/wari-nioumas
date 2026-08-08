@@ -10,9 +10,10 @@ class Affectation extends Model
     use HasFactory;
 
     /**
-     * Périodicités possibles du montant. « journalier » = comportement d'origine
-     * (camions : montant × jours). Les autres sont des forfaits par période
-     * (camionettes) : le montant est dû en entier au début de chaque période.
+     * Périodicités possibles du montant, choisies librement par affectation.
+     * « journalier » = comportement d'origine (montant × jours). Les autres sont
+     * des forfaits par période (ex. camionettes, qui ne se paient pas au jour) :
+     * le montant est dû en entier au début de chaque période.
      */
     public const PERIODICITES = ['journalier', 'mensuel', 'trimestriel', 'semestriel'];
 

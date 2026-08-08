@@ -128,10 +128,10 @@ class Chauffeur extends Model
      * Montant total DÛ (« compte à rebours ») accumulé automatiquement jusqu'à
      * la date donnée (aujourd'hui par défaut).
      *
-     * - Affectation JOURNALIÈRE (camions) : on compte les jours écoulés
-     *   (montant × jours) puis on retranche les jours d'absence acceptée.
+     * - Affectation JOURNALIÈRE : on compte les jours écoulés (montant × jours)
+     *   puis on retranche les jours d'absence acceptée.
      * - Affectation PÉRIODIQUE mensuelle / trimestrielle / semestrielle
-     *   (camionettes) : forfait dû en entier au début de chaque période ; un
+     *   (ex. camionettes) : forfait dû en entier au début de chaque période ; un
      *   nouveau forfait s'ajoute à chaque période commencée. Les absences ne
      *   réduisent pas le forfait.
      */
@@ -175,7 +175,7 @@ class Chauffeur extends Model
                 continue;
             }
 
-            // Comportement journalier d'origine (camions) — inchangé.
+            // Comportement journalier d'origine — inchangé.
             $jours = $debut->diffInDays($fin) + 1; // bornes incluses
 
             $joursAbsence = 0;
