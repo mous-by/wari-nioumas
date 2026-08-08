@@ -1,0 +1,15 @@
+# WARI NIOUMA — à copier en « .htaccess » DANS le dossier de l'application
+# (ex. ~/htdocs/wariniouma.com/laravel_app/.htaccess) lorsque l'application est
+# placée dans un sous-dossier du dossier web (racine du domaine figée).
+#
+# Ce fichier bloque tout accès WEB au code de l'application, au .env, aux
+# migrations, etc. L'inclusion PHP depuis le index.php relais n'est PAS affectée
+# par cette règle (require/include ignore le contrôle d'accès HTTP).
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

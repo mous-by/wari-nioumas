@@ -27,9 +27,11 @@ define('LARAVEL_START', microtime(true));
 // Détection automatique du dossier de l'application (celui qui contient vendor/).
 $app_dir = null;
 foreach ([
+    __DIR__.'/laravel_app',            // app dans un SOUS-dossier du dossier web (racine figée + open_basedir)
     __DIR__.'/../../wariniouma_app',   // web = ~/htdocs/<domaine>/ , app = ~/wariniouma_app
     __DIR__.'/../wariniouma_app',      // web = ~/public_html/ , app = ~/wariniouma_app
     __DIR__.'/../wari-niouma',         // ancienne disposition
+    __DIR__,                           // app fusionnée directement dans le dossier web
     getenv('WARINIOUMA_APP_DIR') ?: null,
 ] as $candidat) {
     if ($candidat && is_file($candidat.'/vendor/autoload.php')) {
