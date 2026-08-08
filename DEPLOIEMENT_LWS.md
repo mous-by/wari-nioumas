@@ -175,3 +175,64 @@ cp .env.production .env      # puis remplir APP_URL + DB_*
 bash deploy/deploy.sh        # installe tout
 # 3) se connecter en 74745669 / superadmin74 puis changer le mot de passe
 ```
+
+---
+
+## 10. Cas concret : formule avec SSH (Performance) + domaine dédié + clonage git
+
+Scénario : nouvelle formule LWS avec **SSH**, un **domaine acheté pour l'application**
+(domaine **principal** du compte), et on **clone le dépôt** directement sur le serveur.
+
+**Remplacez partout `TON_USER` par le nom d'utilisateur cPanel réel de la nouvelle formule**
+(visible dans le panneau ou via `whoami` en SSH). Il est différent de l'ancien compte.
+
+### 10.1 Dans le panneau LWS (avant SSH)
+1. **PHP 8.3** sur le domaine.
+2. **Base MySQL** : créez base + utilisateur, associez-le avec **tous les privilèges**.
+3. **Domaine** : s'il est acheté chez LWS avec l'hébergement, il est déjà rattaché ;
+   sinon pointez ses DNS vers LWS. Attendez qu'il soit actif.
+4. **SSL** : activez Let's Encrypt une fois le domaine actif.
+
+### 10.2 Cloner l'application (SSH) — HORS du web root
+```bash
+cd ~
+git clone https://github.com/mous-by/wari-nioumas.git wariniouma_app
+cd wariniouma_app
+```
+> On clone dans le **home** (`~/wariniouma_app`), **jamais** dans `public_html`.
+
+### 10.3 Configurer et installer
+```bash
+cp .env.production .env
+nano .env        # APP_URL=https://ton-domaine.com ; DB_DATABASE/DB_USERNAME/DB_PASSWORD ; DB_HOST=localhost
+bash deploy/deploy.sh
+```
+
+### 10.4 Relier le domaine au dossier `public/`
+- **Cas A (recommandé)** — si LWS permet de changer la « racine du site » / Document Root
+  du domaine principal : pointez-la sur
+  `/home/TON_USER/wariniouma_app/public`. Rien d'autre à faire.
+- **Cas B (repli)** — si la racine est figée sur `public_html` :
+  ```bash
+  cp -r ~/wariniouma_app/public/. ~/public_html/
+  cp ~/wariniouma_app/deploy/index-public_html.php ~/public_html/index.php
+  nano ~/public_html/index.php     # $app_dir = '/home/TON_USER/wariniouma_app';
+  rm -f ~/public_html/storage && ln -s ~/wariniouma_app/storage/app/public ~/public_html/storage
+  ```
+
+### 10.5 Droits + vérification
+```bash
+chmod -R 775 ~/wariniouma_app/storage ~/wariniouma_app/bootstrap/cache
+```
+Ouvrez `https://ton-domaine.com` → page de connexion → **74745669 / superadmin74** → changez le mot de passe.
+
+### 10.6 Mises à jour futures
+```bash
+cd ~/wariniouma_app
+git pull
+composer install --no-dev --optimize-autoloader   # seulement si vendor a changé
+php artisan migrate --force
+php artisan optimize:clear && php artisan optimize
+# Cas B uniquement, si des assets public/ ont changé :
+# cp -r ~/wariniouma_app/public/. ~/public_html/
+```
