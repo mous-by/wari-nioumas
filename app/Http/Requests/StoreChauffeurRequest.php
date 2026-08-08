@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MalianPhone;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Propaganistas\LaravelPhone\Rules\Phone;
 
 class StoreChauffeurRequest extends FormRequest
 {
@@ -18,7 +18,7 @@ class StoreChauffeurRequest extends FormRequest
         return [
             'nom' => ['required', 'string', 'max:255'],
             'prenom' => ['required', 'string', 'max:255'],
-            'telephone' => ['required', 'string', (new Phone())->country('ML'), 'unique:chauffeurs,telephone'],
+            'telephone' => ['required', 'string', new MalianPhone(), 'unique:chauffeurs,telephone'],
             'adresse' => ['nullable', 'string', 'max:255'],
             'nina' => ['required', 'string', 'max:50', 'unique:chauffeurs,nina'],
             'permis_numero' => ['required', 'string', 'max:50'],

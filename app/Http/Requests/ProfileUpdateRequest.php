@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MalianPhone;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Propaganistas\LaravelPhone\Rules\Phone;
 
 class ProfileUpdateRequest extends FormRequest
 {
@@ -17,7 +17,7 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', (new Phone())->country('ML'), Rule::unique('users', 'phone')->ignore($this->user()->id)],
+            'phone' => ['required', 'string', new MalianPhone(), Rule::unique('users', 'phone')->ignore($this->user()->id)],
             'photo' => ['nullable', 'image', 'max:2048'],
         ];
     }

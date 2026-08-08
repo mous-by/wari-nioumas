@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MalianPhone;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
-use Propaganistas\LaravelPhone\Rules\Phone;
 use Spatie\Permission\Models\Role;
 
 class UpdateUserRequest extends FormRequest
@@ -21,7 +21,7 @@ class UpdateUserRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', (new Phone())->country('ML'), Rule::unique('users', 'phone')->ignore($this->route('user'))],
+            'phone' => ['required', 'string', new MalianPhone(), Rule::unique('users', 'phone')->ignore($this->route('user'))],
             'password' => ['nullable', 'confirmed', Password::defaults()],
             'role' => $isSuperadmin
                 ? ['nullable']
