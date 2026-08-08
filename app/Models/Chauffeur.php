@@ -162,7 +162,7 @@ class Chauffeur extends Model
             $moisParPeriode = $affectation->moisParPeriode();
 
             if ($moisParPeriode > 0) {
-                // Forfait par période (camionettes) : nombre de périodes commencées.
+                // Forfait par mois/trimestre/semestre : nombre de périodes commencées.
                 $moisEcoules = ($fin->year - $debut->year) * 12 + ($fin->month - $debut->month);
                 if ($fin->day < $debut->day) {
                     $moisEcoules--;
@@ -170,6 +170,17 @@ class Chauffeur extends Model
                 $moisEcoules = max(0, $moisEcoules);
 
                 $periodes = intdiv($moisEcoules, $moisParPeriode) + 1;
+                $total += $periodes * (float) $affectation->montant_journalier;
+
+                continue;
+            }
+
+            $joursParPeriode = $affectation->joursParPeriode();
+
+            if ($joursParPeriode > 0) {
+                // Forfait hebdomadaire : nombre de semaines commencées (période de 7 jours).
+                $joursEcoules = (int) $debut->diffInDays($fin);
+                $periodes = intdiv($joursEcoules, $joursParPeriode) + 1;
                 $total += $periodes * (float) $affectation->montant_journalier;
 
                 continue;

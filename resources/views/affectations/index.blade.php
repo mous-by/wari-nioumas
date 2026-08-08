@@ -127,6 +127,7 @@
                                     <label for="periodicite" class="form-label">Périodicité <span class="text-danger">*</span></label>
                                     <select class="single-select form-select" id="periodicite" name="periodicite">
                                         <option value="journalier" @selected(old('periodicite', 'journalier') === 'journalier')>Journalier</option>
+                                        <option value="hebdomadaire" @selected(old('periodicite') === 'hebdomadaire')>Hebdomadaire</option>
                                         <option value="mensuel" @selected(old('periodicite') === 'mensuel')>Mensuel</option>
                                         <option value="trimestriel" @selected(old('periodicite') === 'trimestriel')>Trimestriel</option>
                                         <option value="semestriel" @selected(old('periodicite') === 'semestriel')>Semestriel</option>
@@ -187,6 +188,7 @@
                                     <label class="form-label">Périodicité <span class="text-danger">*</span></label>
                                     <select class="form-select" name="periodicite" id="edit_periodicite">
                                         <option value="journalier">Journalier</option>
+                                        <option value="hebdomadaire">Hebdomadaire</option>
                                         <option value="mensuel">Mensuel</option>
                                         <option value="trimestriel">Trimestriel</option>
                                         <option value="semestriel">Semestriel</option>

@@ -15,7 +15,7 @@ class Affectation extends Model
      * des forfaits par période (ex. camionettes, qui ne se paient pas au jour) :
      * le montant est dû en entier au début de chaque période.
      */
-    public const PERIODICITES = ['journalier', 'mensuel', 'trimestriel', 'semestriel'];
+    public const PERIODICITES = ['journalier', 'hebdomadaire', 'mensuel', 'trimestriel', 'semestriel'];
 
     protected $fillable = [
         'vehicule_id',
@@ -59,7 +59,8 @@ class Affectation extends Model
     }
 
     /**
-     * Nombre de mois d'une période selon la périodicité (0 = journalier).
+     * Nombre de mois d'une période selon la périodicité (0 si la période n'est
+     * pas comptée en mois — journalier ou hebdomadaire).
      */
     public function moisParPeriode(): int
     {
@@ -71,12 +72,24 @@ class Affectation extends Model
     }
 
     /**
+     * Nombre de jours d'une période comptée en jours (7 = hebdomadaire ;
+     * 0 pour les périodes mensuelles ou journalières).
+     */
+    public function joursParPeriode(): int
+    {
+        return [
+            'hebdomadaire' => 7,
+        ][$this->periodicite] ?? 0;
+    }
+
+    /**
      * Suffixe lisible du montant, ex. « / jour », « / mois ».
      */
     public function periodiciteSuffixe(): string
     {
         return [
             'journalier' => '/ jour',
+            'hebdomadaire' => '/ semaine',
             'mensuel' => '/ mois',
             'trimestriel' => '/ trimestre',
             'semestriel' => '/ semestre',
