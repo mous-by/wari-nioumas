@@ -52,7 +52,7 @@
                         </tr>
                         <tr>
                             <th>Numéro NINA</th>
-                            <td>{{ $chauffeur->nina }}</td>
+                            <td>{{ $chauffeur->nina ?: '—' }}</td>
                         </tr>
                         <tr>
                             <th>Numéro de permis</th>

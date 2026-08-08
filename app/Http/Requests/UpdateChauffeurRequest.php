@@ -13,6 +13,13 @@ class UpdateChauffeurRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        // NINA facultatif : une saisie vide est enregistrée comme NULL.
+        $nina = trim((string) $this->input('nina'));
+        $this->merge(['nina' => $nina === '' ? null : $nina]);
+    }
+
     public function rules(): array
     {
         return [
@@ -22,7 +29,7 @@ class UpdateChauffeurRequest extends FormRequest
             'lieu_naissance' => ['nullable', 'string', 'max:255'],
             'telephone' => ['required', 'string', new MalianPhone(), Rule::unique('chauffeurs', 'telephone')->ignore($this->route('chauffeur'))],
             'adresse' => ['nullable', 'string', 'max:255'],
-            'nina' => ['required', 'string', 'max:50', Rule::unique('chauffeurs', 'nina')->ignore($this->route('chauffeur'))],
+            'nina' => ['nullable', 'string', 'max:50', Rule::unique('chauffeurs', 'nina')->ignore($this->route('chauffeur'))],
             'permis_numero' => ['required', 'string', 'max:50'],
             'permis_date_validite' => ['required', 'date'],
             'date_embauche' => ['required', 'date'],

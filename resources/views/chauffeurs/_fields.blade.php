@@ -8,7 +8,7 @@
         <small class="text-muted">Généré automatiquement</small>
     </div>
     <div class="col-md-6 mb-3">
-        <label for="{{ $prefix }}nina" class="form-label">Numéro NINA <span class="text-danger">*</span></label>
+        <label for="{{ $prefix }}nina" class="form-label">Numéro NINA</label>
         <input type="text" class="form-control" id="{{ $prefix }}nina" name="nina" value="{{ old('nina') }}">
     </div>
 </div>

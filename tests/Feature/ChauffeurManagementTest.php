@@ -56,6 +56,18 @@ class ChauffeurManagementTest extends TestCase
         $this->assertSame(1, $chauffeur->statutHistoriques()->count());
     }
 
+    public function test_a_chauffeur_can_be_created_without_nina(): void
+    {
+        $user = $this->userWithRole('gestionnaire');
+
+        $response = $this->actingAs($user)->post('/chauffeurs', $this->validPayload(['nina' => '']));
+
+        $response->assertRedirect(route('chauffeurs.index'));
+        $chauffeur = Chauffeur::firstWhere('nom', 'Traore');
+        $this->assertNotNull($chauffeur);
+        $this->assertNull($chauffeur->nina); // saisie vide enregistrée comme NULL
+    }
+
     public function test_invalid_malian_phone_is_rejected(): void
     {
         $user = $this->userWithRole('gestionnaire');

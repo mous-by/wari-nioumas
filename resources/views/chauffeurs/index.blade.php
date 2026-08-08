@@ -45,7 +45,7 @@
                             <td>{{ $chauffeur->matricule }}</td>
                             <td>{{ $chauffeur->nom_complet }}</td>
                             <td>{{ $chauffeur->telephone }}</td>
-                            <td>{{ $chauffeur->nina }}</td>
+                            <td>{{ $chauffeur->nina ?: '—' }}</td>
                             <td>
                                 <span class="badge {{ ['actif' => 'bg-success', 'inactif' => 'bg-secondary', 'suspendu' => 'bg-danger'][$chauffeur->statut] }}">
                                     {{ ucfirst($chauffeur->statut) }}
