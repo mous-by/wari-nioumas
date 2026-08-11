@@ -20,7 +20,9 @@ class DashboardController extends Controller
         $now = Carbon::now();
 
         return view('home', [
-            'usersCount' => User::where('actif', true)->count(),
+            'usersCount' => User::where('actif', true)
+                ->whereDoesntHave('roles', fn ($q) => $q->where('name', 'superadmin'))
+                ->count(),
             'chauffeursCount' => Chauffeur::where('statut', 'actif')->count(),
             'vehiculesCount' => Vehicule::where('etat', 'actif')->count(),
             'recettesDuMois' => (float) Versement::whereBetween('date_versement', [$now->copy()->startOfMonth(), $now->copy()->endOfMonth()])->sum('montant'),

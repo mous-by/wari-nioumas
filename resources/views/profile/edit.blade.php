@@ -86,25 +86,34 @@
 
                         <div class="mb-3">
                             <label for="current_password" class="form-label">Mot de passe actuel <span class="text-danger">*</span></label>
-                            <input type="password" id="current_password" name="current_password"
-                                   class="form-control @error('current_password') is-invalid @enderror">
+                            <div class="input-group">
+                                <input type="password" id="current_password" name="current_password"
+                                       class="form-control @error('current_password') is-invalid @enderror">
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="current_password" tabindex="-1" aria-label="Afficher le mot de passe"><i class='bx bx-show'></i></button>
+                            </div>
                             @error('current_password')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">Nouveau mot de passe <span class="text-danger">*</span></label>
-                            <input type="password" id="password" name="password"
-                                   class="form-control @error('password') is-invalid @enderror">
+                            <div class="input-group">
+                                <input type="password" id="password" name="password"
+                                       class="form-control @error('password') is-invalid @enderror">
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="password" tabindex="-1" aria-label="Afficher le mot de passe"><i class='bx bx-show'></i></button>
+                            </div>
                             @error('password')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="password_confirmation" class="form-label">Confirmer le nouveau mot de passe <span class="text-danger">*</span></label>
-                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control">
+                            <div class="input-group">
+                                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control">
+                                <button type="button" class="btn btn-outline-secondary toggle-password" data-target="password_confirmation" tabindex="-1" aria-label="Afficher le mot de passe"><i class='bx bx-show'></i></button>
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary">Mettre à jour le mot de passe</button>
@@ -127,6 +136,21 @@
                 $('#photo-preview').attr('src', e.target.result).show();
             };
             reader.readAsDataURL(file);
+        });
+
+        // Afficher / masquer les mots de passe (icône œil)
+        document.querySelectorAll('.toggle-password').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const input = document.getElementById(this.dataset.target);
+                const icon = this.querySelector('i');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.replace('bx-show', 'bx-hide');
+                } else {
+                    input.type = 'password';
+                    icon.classList.replace('bx-hide', 'bx-show');
+                }
+            });
         });
     </script>
 @endpush
