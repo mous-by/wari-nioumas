@@ -124,6 +124,10 @@ Route::middleware('auth')->group(function () {
         Route::patch('/affectations/{affectation}/terminer', [AffectationController::class, 'terminer'])->name('affectations.terminer');
     });
 
+    Route::middleware('permission:affectations.supprimer')->group(function () {
+        Route::delete('/affectations/{affectation}', [AffectationController::class, 'destroy'])->name('affectations.destroy');
+    });
+
     Route::middleware('permission:recettes.voir')->group(function () {
         Route::get('/recettes', [RecetteController::class, 'index'])->name('recettes.index');
     });

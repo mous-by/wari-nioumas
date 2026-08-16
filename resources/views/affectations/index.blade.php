@@ -81,6 +81,15 @@
                                         </form>
                                     @endunless
                                 @endcan
+                                @can('affectations.supprimer')
+                                    <form method="POST" action="{{ route('affectations.destroy', $affectation) }}" class="d-inline delete-affectation-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Supprimer">
+                                            <i class='bx bx-trash'></i>
+                                        </button>
+                                    </form>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
@@ -158,7 +167,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            <button type="submit" class="btn btn-primary" id="addAffectationSubmit">Enregistrer</button>
                         </div>
                     </form>
                 </div>
@@ -257,6 +266,35 @@
                     form.submit();
                 }
             });
+        });
+
+        $(document).on('submit', '.delete-affectation-form', function (e) {
+            e.preventDefault();
+            const form = this;
+
+            Swal.fire({
+                title: 'Supprimer cette affectation ?',
+                text: 'Cette action est irréversible.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Oui, supprimer',
+                cancelButtonText: 'Annuler',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+
+        // Empêche un double-clic sur "Enregistrer" d'envoyer deux fois la
+        // même nouvelle affectation (voir le garde-fou côté serveur aussi).
+        $('#addAffectationModal form').on('submit', function () {
+            $('#addAffectationSubmit').prop('disabled', true);
+        });
+        $('#addAffectationModal').on('hidden.bs.modal', function () {
+            $('#addAffectationSubmit').prop('disabled', false);
         });
     </script>
 @endpush

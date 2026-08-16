@@ -24,9 +24,23 @@ class AffectationController extends Controller
 
     public function store(StoreAffectationRequest $request): RedirectResponse
     {
-        DB::transaction(function () use ($request) {
-            $data = $request->validated();
+        $data = $request->validated();
 
+        // Un double-clic sur « Enregistrer » soumet deux fois le même
+        // formulaire : sans ce garde-fou, la 2e soumission referme aussitôt
+        // l'affectation tout juste créée par la 1re (même véhicule +
+        // chauffeur déjà actifs) et en recrée une identique, laissant une
+        // ligne fantôme "ouverte puis fermée le même jour" dans l'historique.
+        $dejaActive = Affectation::where('vehicule_id', $data['vehicule_id'])
+            ->where('chauffeur_id', $data['chauffeur_id'])
+            ->whereNull('date_fin')
+            ->exists();
+
+        if ($dejaActive) {
+            return redirect()->route('affectations.index')->with('status', 'Cette affectation est déjà active.');
+        }
+
+        DB::transaction(function () use ($data) {
             Affectation::where('vehicule_id', $data['vehicule_id'])
                 ->whereNull('date_fin')
                 ->update(['date_fin' => $data['date_debut'], 'motif_fin' => 'Réaffecté à un autre chauffeur']);
@@ -56,5 +70,12 @@ class AffectationController extends Controller
         ]);
 
         return back()->with('status', 'Affectation terminée avec succès.');
+    }
+
+    public function destroy(Affectation $affectation): RedirectResponse
+    {
+        $affectation->delete();
+
+        return back()->with('status', 'Affectation supprimée avec succès.');
     }
 }
