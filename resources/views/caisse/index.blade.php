@@ -244,7 +244,7 @@
 
         document.querySelectorAll('#mouvements-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.confirm-form').on('submit', function (e) {
+        $(document).on('submit', '.confirm-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({

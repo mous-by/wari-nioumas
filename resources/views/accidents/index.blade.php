@@ -198,7 +198,7 @@
 
         document.querySelectorAll('#accidents-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-accident-button').on('click', function () {
+        $(document).on('click', '.edit-accident-button', function () {
             const d = $(this).data();
             $('#editAccidentForm').attr('action', d.url);
             $('#edit_vehicule_id').val(d.vehicule_id || '').trigger('change');
@@ -213,7 +213,7 @@
             $('#edit_statut').val(d.statut);
         });
 
-        $('.delete-accident-form').on('submit', function (e) {
+        $(document).on('submit', '.delete-accident-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({

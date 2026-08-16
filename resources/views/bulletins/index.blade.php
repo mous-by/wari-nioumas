@@ -226,7 +226,7 @@
 
         document.querySelectorAll('#bulletins-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-bulletin-button').on('click', function () {
+        $(document).on('click', '.edit-bulletin-button', function () {
             const d = $(this).data();
             $('#editBulletinForm').attr('action', d.url);
             $('#edit_bulletin_employe').text(d.employe);
@@ -236,7 +236,7 @@
             $('#edit_bulletin_observations').val(d.observations);
         });
 
-        $('.confirm-form').on('submit', function (e) {
+        $(document).on('submit', '.confirm-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({

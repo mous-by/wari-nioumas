@@ -230,7 +230,7 @@
 
         document.querySelectorAll('#affectations-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-affectation-button').on('click', function () {
+        $(document).on('click', '.edit-affectation-button', function () {
             const data = $(this).data();
             $('#editAffectationForm').attr('action', data.url);
             $('#edit_affectation_libelle').text(data.vehicule + ' — ' + data.chauffeur);
@@ -240,7 +240,7 @@
             $('#edit_observations').val(data.observations);
         });
 
-        $('.terminer-affectation-form').on('submit', function (e) {
+        $(document).on('submit', '.terminer-affectation-form', function (e) {
             e.preventDefault();
             const form = this;
 

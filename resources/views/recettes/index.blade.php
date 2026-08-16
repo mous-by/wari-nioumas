@@ -270,12 +270,12 @@
         document.querySelectorAll('#comptes-table [title], #versements-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
         // Pré-sélectionner le chauffeur depuis le bouton « versement » d'une ligne de compte
-        $('.add-versement-button').on('click', function () {
+        $(document).on('click', '.add-versement-button', function () {
             const id = String($(this).data('chauffeur'));
             $('#versement_chauffeur').val(id).trigger('change');
         });
 
-        $('.edit-versement-button').on('click', function () {
+        $(document).on('click', '.edit-versement-button', function () {
             const data = $(this).data();
             $('#editVersementForm').attr('action', data.url);
             $('#edit_versement_chauffeur').text(data.chauffeur);
@@ -284,7 +284,7 @@
             $('#edit_observations').val(data.observations);
         });
 
-        $('.delete-versement-form').on('submit', function (e) {
+        $(document).on('submit', '.delete-versement-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({

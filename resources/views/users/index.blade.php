@@ -230,14 +230,14 @@
             new bootstrap.Tooltip(el);
         });
 
-        $('.edit-user-button').on('click', function () {
+        $(document).on('click', '.edit-user-button', function () {
             $('#editUserForm').attr('action', $(this).data('url'));
             $('#edit_name').val($(this).data('name'));
             $('#edit_phone').val($(this).data('phone'));
             $('#edit_role').val($(this).data('role'));
         });
 
-        $('.toggle-actif-form').on('submit', function (e) {
+        $(document).on('submit', '.toggle-actif-form', function (e) {
             e.preventDefault();
             const form = this;
 
@@ -257,7 +257,7 @@
         });
 
         // Suppression définitive : il faut saisir le nom exact de l'utilisateur
-        $('.delete-user-form').on('submit', function (e) {
+        $(document).on('submit', '.delete-user-form', function (e) {
             e.preventDefault();
             const form = this;
             const name = $(this).data('name');

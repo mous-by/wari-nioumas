@@ -192,7 +192,7 @@
 
         document.querySelectorAll('#absences-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-absence-button').on('click', function () {
+        $(document).on('click', '.edit-absence-button', function () {
             const data = $(this).data();
             $('#editAbsenceForm').attr('action', data.url);
             $('#edit_absence_chauffeur').text(data.chauffeur);
@@ -201,7 +201,7 @@
             $('#edit_motif').val(data.motif);
         });
 
-        $('.confirm-form').on('submit', function (e) {
+        $(document).on('submit', '.confirm-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({

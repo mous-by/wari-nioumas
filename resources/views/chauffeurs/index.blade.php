@@ -152,7 +152,7 @@
 
         document.querySelectorAll('#chauffeurs-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-chauffeur-button').on('click', function () {
+        $(document).on('click', '.edit-chauffeur-button', function () {
             const data = $(this).data();
             $('#editChauffeurForm').attr('action', data.url);
             ['matricule', 'nom', 'prenom', 'date_naissance', 'lieu_naissance', 'telephone', 'adresse', 'nina', 'permis_numero',
@@ -161,7 +161,7 @@
             });
         });
 
-        $('.delete-chauffeur-form').on('submit', function (e) {
+        $(document).on('submit', '.delete-chauffeur-form', function (e) {
             e.preventDefault();
             const form = this;
 

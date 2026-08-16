@@ -197,7 +197,7 @@
 
         document.querySelectorAll('#incidents-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-incident-button').on('click', function () {
+        $(document).on('click', '.edit-incident-button', function () {
             const d = $(this).data();
             $('#editIncidentForm').attr('action', d.url);
             $('#edit_vehicule_id').val(d.vehicule_id || '').trigger('change');
@@ -211,7 +211,7 @@
             $('#edit_statut').val(d.statut);
         });
 
-        $('.delete-incident-form').on('submit', function (e) {
+        $(document).on('submit', '.delete-incident-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({

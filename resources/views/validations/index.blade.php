@@ -95,7 +95,7 @@
     <script>
         $('#validations-traitees').DataTable();
 
-        $('.confirm-form').on('submit', function (e) {
+        $(document).on('submit', '.confirm-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({
@@ -106,7 +106,7 @@
             }).then((r) => { if (r.isConfirmed) form.submit(); });
         });
 
-        $('.refuser-btn').on('click', function () {
+        $(document).on('click', '.refuser-btn', function () {
             const url = $(this).data('url');
             Swal.fire({
                 title: 'Refuser la demande',

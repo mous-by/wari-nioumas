@@ -261,7 +261,7 @@
 
         document.querySelectorAll('#depenses-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-depense-button').on('click', function () {
+        $(document).on('click', '.edit-depense-button', function () {
             const data = $(this).data();
             $('#editDepenseForm').attr('action', data.url);
             $('#edit_categorie').val(data.categorie);
@@ -271,7 +271,7 @@
             $('#edit_description').val(data.description);
         });
 
-        $('.delete-depense-form').on('submit', function (e) {
+        $(document).on('submit', '.delete-depense-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({

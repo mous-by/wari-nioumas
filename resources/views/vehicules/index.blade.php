@@ -148,7 +148,7 @@
 
         document.querySelectorAll('#vehicules-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-vehicule-button').on('click', function () {
+        $(document).on('click', '.edit-vehicule-button', function () {
             const data = $(this).data();
             $('#editVehiculeForm').attr('action', data.url);
             ['immatriculation', 'marque', 'modele', 'type', 'annee', 'etat', 'observations'].forEach(function (field) {
@@ -156,7 +156,7 @@
             });
         });
 
-        $('.delete-vehicule-form').on('submit', function (e) {
+        $(document).on('submit', '.delete-vehicule-form', function (e) {
             e.preventDefault();
             const form = this;
 

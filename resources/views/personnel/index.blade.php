@@ -166,14 +166,14 @@
 
         document.querySelectorAll('#personnel-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
-        $('.edit-personnel-button').on('click', function () {
+        $(document).on('click', '.edit-personnel-button', function () {
             const d = $(this).data();
             $('#editPersonnelForm').attr('action', d.url);
             ['nom','prenom','poste','telephone','salaire_base','date_embauche','banque','numero_compte','statut','user_id','chauffeur_id','observations']
                 .forEach(f => $('#edit_' + f).val(d[f] ?? ''));
         });
 
-        $('.confirm-form').on('submit', function (e) {
+        $(document).on('submit', '.confirm-form', function (e) {
             e.preventDefault();
             const form = this;
             Swal.fire({
