@@ -151,6 +151,14 @@ class Chauffeur extends Model
                 continue; // affectation qui commence dans le futur
             }
 
+            if ($affectation->periodicite === 'voyage') {
+                // Forfait voyage : montant dû une seule fois (saisi manuellement),
+                // jamais multiplié par les jours écoulés.
+                $total += (float) $affectation->montant_journalier;
+
+                continue;
+            }
+
             $fin = $affectation->date_fin
                 ? $affectation->date_fin->copy()->startOfDay()
                 : $jusquA->copy();

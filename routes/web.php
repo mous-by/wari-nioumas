@@ -118,6 +118,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('permission:affectations.modifier')->group(function () {
         Route::put('/affectations/{affectation}', [AffectationController::class, 'update'])->name('affectations.update');
+        Route::post('/affectations/{affectation}/versement', [AffectationController::class, 'verser'])->name('affectations.versement');
     });
 
     Route::middleware('permission:affectations.terminer')->group(function () {

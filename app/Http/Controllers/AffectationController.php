@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAffectationRequest;
+use App\Http\Requests\StoreAffectationVersementRequest;
 use App\Http\Requests\UpdateAffectationRequest;
 use App\Models\Affectation;
 use App\Models\Chauffeur;
 use App\Models\Vehicule;
+use App\Models\Versement;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -16,7 +18,7 @@ class AffectationController extends Controller
     public function index(): View
     {
         return view('affectations.index', [
-            'affectations' => Affectation::with(['vehicule', 'chauffeur'])->latest('date_debut')->get(),
+            'affectations' => Affectation::with(['vehicule', 'chauffeur', 'versements'])->latest('date_debut')->get(),
             'vehicules' => Vehicule::orderBy('immatriculation')->get(),
             'chauffeurs' => Chauffeur::orderBy('nom')->get(),
         ]);
@@ -77,5 +79,22 @@ class AffectationController extends Controller
         $affectation->delete();
 
         return back()->with('status', 'Affectation supprimée avec succès.');
+    }
+
+    /**
+     * Enregistre un versement pour une affectation « voyage » : rattaché à
+     * l'affectation (reliquat propre à ce voyage) ET au chauffeur (compte
+     * aussi dans le total global de la page Recettes).
+     */
+    public function verser(StoreAffectationVersementRequest $request, Affectation $affectation): RedirectResponse
+    {
+        Versement::create([
+            ...$request->validated(),
+            'chauffeur_id' => $affectation->chauffeur_id,
+            'affectation_id' => $affectation->id,
+            'user_id' => auth()->id(),
+        ]);
+
+        return redirect()->route('affectations.index')->with('status', 'Versement enregistré avec succès.');
     }
 }
