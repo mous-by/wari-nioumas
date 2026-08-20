@@ -96,7 +96,7 @@
                             <td><span class="badge {{ $graviteBadges[$incident->gravite] }}">{{ $incident->gravite_libelle }}</span></td>
                             <td>{{ $fmt($incident->cout) }}</td>
                             <td><span class="badge {{ $statutBadges[$incident->statut] }}">{{ $incident->statut_libelle }}</span></td>
-                            <td>
+                            <td class="text-nowrap">
                                 <a href="{{ route('incidents.show', $incident) }}" class="btn btn-info btn-sm" title="Voir"><i class='bx bx-show'></i></a>
                                 @can('incidents.modifier')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-incident-button"

@@ -83,7 +83,7 @@
                             <td>{{ $fmt($bulletin->retenues) }}</td>
                             <td><strong>{{ $fmt($bulletin->net_a_payer) }}</strong></td>
                             <td><span class="badge {{ $statutBadges[$bulletin->statut] }}">{{ $bulletin->statut_libelle }}</span></td>
-                            <td>
+                            <td class="text-nowrap">
                                 <a href="{{ route('bulletins.pdf', $bulletin) }}" target="_blank" class="btn btn-info btn-sm" title="PDF"><i class='bx bxs-file-pdf'></i></a>
                                 @can('bulletins.gerer')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-bulletin-button"

@@ -94,7 +94,7 @@
                                     {{ $fmt($compte['solde']) }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="text-nowrap">
                                 @can('recettes.creer')
                                     <button type="button" class="btn btn-primary btn-sm add-versement-button"
                                             data-bs-toggle="modal" data-bs-target="#addVersementModal"
@@ -133,7 +133,7 @@
                             <td>{{ $versement->chauffeur?->nom_complet ?? '— supprimé' }}</td>
                             <td>{{ $fmt($versement->montant) }}</td>
                             <td>{{ $versement->observations ?? '—' }}</td>
-                            <td>
+                            <td class="text-nowrap">
                                 @can('recettes.modifier')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-versement-button"
                                        data-bs-toggle="modal" data-bs-target="#editVersementModal"

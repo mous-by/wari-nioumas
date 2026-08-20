@@ -53,7 +53,7 @@
                                 @endphp
                                 <span class="badge {{ $etatBadges[$vehicule->etat] }}">{{ $etatLabels[$vehicule->etat] }}</span>
                             </td>
-                            <td>
+                            <td class="text-nowrap">
                                 <a href="{{ route('vehicules.show', $vehicule) }}" class="btn btn-primary btn-sm" title="Voir la fiche">
                                     <i class='bx bx-show'></i>
                                 </a>

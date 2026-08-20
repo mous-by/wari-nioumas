@@ -115,7 +115,7 @@
                                 </td>
                                 <td>{{ ($mouvement->type === 'entree' ? '+ ' : '− ').$fmt($mouvement->montant) }}</td>
                                 <td>{{ $mouvement->user?->name ?? '—' }}</td>
-                                <td>
+                                <td class="text-nowrap">
                                     @can('caisse.mouvementer')
                                         @unless ($mouvement->estAutomatique())
                                             <form method="POST" action="{{ route('caisse.mouvement.destroy', $mouvement) }}" class="d-inline confirm-form" data-title="Supprimer ce mouvement ?">

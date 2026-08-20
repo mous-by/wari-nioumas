@@ -59,7 +59,7 @@
                             <td>{{ $mandat->lignes_count }}</td>
                             <td>{{ $fmt($mandat->montant_total) }}</td>
                             <td><span class="badge {{ $statutBadges[$mandat->statut] }}">{{ $mandat->statut_libelle }}</span></td>
-                            <td>
+                            <td class="text-nowrap">
                                 <a href="{{ route('mandats.show', $mandat) }}" class="btn btn-info btn-sm" title="Voir"><i class='bx bx-show'></i></a>
                                 <a href="{{ route('mandats.pdf', $mandat) }}" target="_blank" class="btn btn-secondary btn-sm" title="PDF"><i class='bx bxs-file-pdf'></i></a>
                                 @can('mandats.gerer')

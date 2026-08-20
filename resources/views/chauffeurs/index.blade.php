@@ -51,7 +51,7 @@
                                     {{ ucfirst($chauffeur->statut) }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="text-nowrap">
                                 <a href="{{ route('chauffeurs.show', $chauffeur) }}" class="btn btn-primary btn-sm" title="Voir la fiche">
                                     <i class='bx bx-show'></i>
                                 </a>

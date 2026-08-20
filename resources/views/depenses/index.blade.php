@@ -97,7 +97,7 @@
                             <td><span class="badge bg-secondary">{{ $depense->categorie_libelle }}</span></td>
                             <td>{{ $fmt($depense->montant) }}</td>
                             <td>{{ $depense->description ?? '—' }}</td>
-                            <td>
+                            <td class="text-nowrap">
                                 @can('depenses.modifier')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-depense-button"
                                        data-bs-toggle="modal" data-bs-target="#editDepenseModal"

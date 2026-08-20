@@ -52,7 +52,7 @@
                             <td>{{ $absence->nombreJours() }}</td>
                             <td>{{ $absence->motif }}</td>
                             <td><span class="badge {{ $statutBadges[$absence->statut] }}">{{ $statutLabels[$absence->statut] }}</span></td>
-                            <td>
+                            <td class="text-nowrap">
                                 @if ($absence->statut === 'en_attente')
                                     @can('absences.valider')
                                         <form method="POST" action="{{ route('absences.accepter', $absence) }}" class="d-inline confirm-form" data-title="Accepter cette absence ?">

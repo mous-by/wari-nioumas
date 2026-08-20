@@ -96,7 +96,7 @@
                             <td>{{ $accident->responsabilite_libelle }}</td>
                             <td>{{ $fmt($accident->cout_reparation) }}</td>
                             <td><span class="badge {{ $statutBadges[$accident->statut] }}">{{ $accident->statut_libelle }}</span></td>
-                            <td>
+                            <td class="text-nowrap">
                                 <a href="{{ route('accidents.show', $accident) }}" class="btn btn-info btn-sm" title="Voir"><i class='bx bx-show'></i></a>
                                 @can('accidents.modifier')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-accident-button"

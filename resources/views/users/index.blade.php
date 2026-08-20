@@ -55,7 +55,7 @@
                                             {{ $user->actif ? 'Actif' : 'Désactivé' }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="text-nowrap">
                                         @can('utilisateurs.modifier')
                                             @if (! $user->hasRole('superadmin') || auth()->user()->hasRole('superadmin'))
                                                 <a href="javascript:;" class="btn btn-success btn-sm edit-user-button"

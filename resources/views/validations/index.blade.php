@@ -42,7 +42,7 @@
                             <td>{{ $v->created_at->format('d/m/Y H:i') }}</td>
                             <td>{{ $v->libelle }}</td>
                             <td>{{ $v->demandeur?->name ?? '—' }}</td>
-                            <td>
+                            <td class="text-nowrap">
                                 <form method="POST" action="{{ route('validations.approuver', $v) }}" class="d-inline confirm-form" data-title="Approuver cette demande ?">
                                     @csrf @method('PATCH')
                                     <button type="submit" class="btn btn-success btn-sm"><i class='bx bx-check'></i> Approuver</button>

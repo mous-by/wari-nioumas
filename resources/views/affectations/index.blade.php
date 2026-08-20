@@ -65,7 +65,7 @@
                                     <span class="badge bg-success">En cours</span>
                                 @endif
                             </td>
-                            <td>
+                            <td class="text-nowrap">
                                 @can('affectations.creer')
                                     @if ($affectation->periodicite === 'voyage')
                                         <a href="javascript:;" class="btn btn-primary btn-sm ajouter-voyage-button"

@@ -74,7 +74,7 @@
                                     {{ ucfirst($personnel->statut) }}
                                 </span>
                             </td>
-                            <td>
+                            <td class="text-nowrap">
                                 <a href="{{ route('personnel.show', $personnel) }}" class="btn btn-info btn-sm" title="Voir la fiche"><i class='bx bx-show'></i></a>
                                 @can('personnel.modifier')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-personnel-button"
