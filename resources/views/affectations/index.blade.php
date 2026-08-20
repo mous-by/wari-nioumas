@@ -269,9 +269,9 @@
                                 <input type="date" class="form-control" name="date_voyage" id="ajouter_voyage_date" value="{{ date('Y-m-d') }}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Montant du voyage <span class="text-danger">*</span></label>
+                                <label class="form-label">Montant encaissé pour ce voyage <span class="text-danger">*</span></label>
                                 <input type="number" step="1" min="1" class="form-control" name="montant" id="ajouter_voyage_montant">
-                                <small class="text-muted">S'ajoute automatiquement au total cumulé de ce chauffeur.</small>
+                                <small class="text-muted">Ce que le chauffeur a rapporté pour ce voyage. S'ajoute immédiatement au total cumulé de ce chauffeur.</small>
                             </div>
                             <div class="mb-1">
                                 <label class="form-label">Observations</label>

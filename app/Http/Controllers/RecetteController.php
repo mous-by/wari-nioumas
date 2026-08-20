@@ -21,10 +21,18 @@ class RecetteController extends Controller
 
         $verseSur = fn ($debut, $fin) => (float) Versement::whereBetween('date_versement', [$debut, $fin])->sum('montant');
 
+        // Un chauffeur dont TOUTES les affectations sont de type "voyage" n'a
+        // aucun montant dû ici (voir Chauffeur::totalVoyages() sur la page
+        // Affectations à la place) : on ne l'affiche pas, pour éviter de
+        // confondre un versement Recettes avec le total de ses voyages.
+        $nApasQueDesVoyages = fn (Chauffeur $chauffeur) => $chauffeur->affectations->isEmpty()
+            || $chauffeur->affectations->contains(fn ($a) => $a->periodicite !== 'voyage');
+
         // Comptes des chauffeurs : dû (accumulé), versé, solde.
         $comptes = Chauffeur::with(['affectations', 'absences', 'versements'])
             ->orderBy('nom')
             ->get()
+            ->filter($nApasQueDesVoyages)
             ->map(function (Chauffeur $chauffeur) {
                 $du = $chauffeur->montantDu();
                 $verse = $chauffeur->totalVerse();
@@ -42,7 +50,7 @@ class RecetteController extends Controller
         return view('recettes.index', [
             'comptes' => $comptes,
             'versements' => Versement::with('chauffeur')->latest('date_versement')->latest('id')->get(),
-            'chauffeurs' => Chauffeur::where('statut', 'actif')->orderBy('nom')->get(),
+            'chauffeurs' => Chauffeur::where('statut', 'actif')->with('affectations')->orderBy('nom')->get()->filter($nApasQueDesVoyages)->values(),
             'totaux' => [
                 'semaine' => $verseSur($now->copy()->startOfWeek(), $now->copy()->endOfWeek()),
                 'mois' => $verseSur($now->copy()->startOfMonth(), $now->copy()->endOfMonth()),
