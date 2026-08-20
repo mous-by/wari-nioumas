@@ -114,11 +114,11 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('permission:affectations.creer')->group(function () {
         Route::post('/affectations', [AffectationController::class, 'store'])->name('affectations.store');
+        Route::post('/affectations/{affectation}/voyages', [AffectationController::class, 'ajouterVoyage'])->name('affectations.voyages.store');
     });
 
     Route::middleware('permission:affectations.modifier')->group(function () {
         Route::put('/affectations/{affectation}', [AffectationController::class, 'update'])->name('affectations.update');
-        Route::post('/affectations/{affectation}/versement', [AffectationController::class, 'verser'])->name('affectations.versement');
     });
 
     Route::middleware('permission:affectations.terminer')->group(function () {

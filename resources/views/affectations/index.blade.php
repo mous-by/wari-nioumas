@@ -34,8 +34,7 @@
                         <th>VEHICULE</th>
                         <th>CHAUFFEUR</th>
                         <th>MONTANT</th>
-                        <th>VERSÉ</th>
-                        <th>RELIQUAT</th>
+                        <th>TOTAL VOYAGES</th>
                         <th>DEBUT</th>
                         <th>FIN</th>
                         <th>STATUT</th>
@@ -48,15 +47,13 @@
                             <td>@if ($affectation->vehicule)<a href="{{ route('vehicules.show', $affectation->vehicule) }}">{{ $affectation->vehicule->immatriculation }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
                             <td>@if ($affectation->chauffeur)<a href="{{ route('chauffeurs.show', $affectation->chauffeur) }}">{{ $affectation->chauffeur->nom_complet }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
                             <td>{{ number_format((float) $affectation->montant_journalier, 0, ',', ' ') }} FCFA <small class="text-muted">{{ $affectation->periodiciteSuffixe() }}</small></td>
-                            @if ($affectation->periodicite === 'voyage')
-                                <td>{{ number_format($affectation->montantVerse(), 0, ',', ' ') }} FCFA</td>
+                            @if ($affectation->periodicite === 'voyage' && $affectation->chauffeur)
                                 <td>
-                                    <span class="badge {{ $affectation->reliquat() > 0 ? 'bg-danger' : 'bg-success' }}">
-                                        {{ number_format($affectation->reliquat(), 0, ',', ' ') }} FCFA
+                                    <span class="badge bg-primary">
+                                        {{ number_format($affectation->chauffeur->totalVoyages(), 0, ',', ' ') }} FCFA
                                     </span>
                                 </td>
                             @else
-                                <td class="text-muted">—</td>
                                 <td class="text-muted">—</td>
                             @endif
                             <td>{{ $affectation->date_debut->format('d/m/Y') }}</td>
@@ -69,16 +66,18 @@
                                 @endif
                             </td>
                             <td>
-                                @can('affectations.modifier')
+                                @can('affectations.creer')
                                     @if ($affectation->periodicite === 'voyage')
-                                        <a href="javascript:;" class="btn btn-primary btn-sm verser-voyage-button"
-                                           data-bs-toggle="modal" data-bs-target="#verserVoyageModal"
-                                           data-url="{{ route('affectations.versement', $affectation) }}"
+                                        <a href="javascript:;" class="btn btn-primary btn-sm ajouter-voyage-button"
+                                           data-bs-toggle="modal" data-bs-target="#ajouterVoyageModal"
+                                           data-url="{{ route('affectations.voyages.store', $affectation) }}"
                                            data-libelle="{{ $affectation->vehicule?->immatriculation }} — {{ $affectation->chauffeur?->nom_complet }}"
-                                           title="Enregistrer un versement">
-                                            <i class='bx bx-wallet'></i>
+                                           title="Ajouter un voyage">
+                                            <i class='bx bx-plus-circle'></i>
                                         </a>
                                     @endif
+                                @endcan
+                                @can('affectations.modifier')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-affectation-button"
                                        data-bs-toggle="modal" data-bs-target="#editAffectationModal"
                                        data-url="{{ route('affectations.update', $affectation) }}"
@@ -166,18 +165,21 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" id="montant_journalier_row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="montant_journalier" class="form-label" id="montant_journalier_label">Montant <span class="text-danger">*</span></label>
+                                    <label for="montant_journalier" class="form-label">Montant <span class="text-danger">*</span></label>
                                     <input type="number" step="1" min="0" class="form-control" id="montant_journalier" name="montant_journalier" value="{{ old('montant_journalier', 0) }}" placeholder="FCFA par période">
-                                    <small class="text-muted" id="montant_journalier_hint">Montant dû par période choisie (jour, mois, trimestre, semestre).</small>
+                                    <small class="text-muted">Montant dû par période choisie (jour, mois, trimestre, semestre).</small>
                                 </div>
                             </div>
                             <div class="mb-1">
                                 <label for="observations" class="form-label">Observations</label>
                                 <textarea class="form-control" id="observations" name="observations" rows="2"></textarea>
                             </div>
-                            <div class="alert alert-info py-2 mb-0 mt-3">
+                            <div class="alert alert-info py-2 mb-0 mt-3" id="voyage_creation_hint" style="display:none">
+                                Aucun montant à saisir ici : une fois l'affectation créée, ajoutez chaque voyage (date + montant) avec le bouton dédié sur sa ligne. Les montants s'additionnent automatiquement.
+                            </div>
+                            <div class="alert alert-info py-2 mb-0 mt-3" id="reaffectation_hint">
                                 Si le véhicule ou le chauffeur a déjà une affectation en cours, elle sera automatiquement terminée.
                             </div>
                             @if ($errors->any())
@@ -228,7 +230,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
+                            <div class="row" id="edit_montant_journalier_row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Montant <span class="text-danger">*</span></label>
                                     <input type="number" step="1" min="0" class="form-control" name="montant_journalier" id="edit_montant_journalier">
@@ -250,29 +252,30 @@
         </div>
     @endcan
 
-    @can('affectations.modifier')
-        <div class="modal fade" id="verserVoyageModal" tabindex="-1" aria-hidden="true">
+    @can('affectations.creer')
+        <div class="modal fade" id="ajouterVoyageModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form method="POST" id="verserVoyageForm" action="">
+                    <form method="POST" id="ajouterVoyageForm" action="">
                         @csrf
                         <div class="modal-header">
-                            <h5 class="modal-title">Enregistrer un versement</h5>
+                            <h5 class="modal-title">Ajouter un voyage</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p class="mb-3"><strong id="verser_voyage_libelle"></strong></p>
+                            <p class="mb-3"><strong id="ajouter_voyage_libelle"></strong></p>
                             <div class="mb-3">
-                                <label class="form-label">Date du versement <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" name="date_versement" id="verser_date_versement" value="{{ date('Y-m-d') }}">
+                                <label class="form-label">Date du voyage <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="date_voyage" id="ajouter_voyage_date" value="{{ date('Y-m-d') }}">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Montant versé <span class="text-danger">*</span></label>
-                                <input type="number" step="1" min="1" class="form-control" name="montant" id="verser_montant">
+                                <label class="form-label">Montant du voyage <span class="text-danger">*</span></label>
+                                <input type="number" step="1" min="1" class="form-control" name="montant" id="ajouter_voyage_montant">
+                                <small class="text-muted">S'ajoute automatiquement au total cumulé de ce chauffeur.</small>
                             </div>
                             <div class="mb-1">
                                 <label class="form-label">Observations</label>
-                                <textarea class="form-control" name="observations" id="verser_observations" rows="2"></textarea>
+                                <textarea class="form-control" name="observations" id="ajouter_voyage_observations" rows="2"></textarea>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -304,7 +307,7 @@
             $('#edit_affectation_libelle').text(data.vehicule + ' — ' + data.chauffeur);
             $('#edit_date_debut').val(data.date_debut);
             $('#edit_montant_journalier').val(data.montant_journalier);
-            $('#edit_periodicite').val(data.periodicite || 'journalier');
+            $('#edit_periodicite').val(data.periodicite || 'journalier').trigger('change');
             $('#edit_observations').val(data.observations);
         });
 
@@ -327,26 +330,33 @@
             });
         });
 
-        $(document).on('click', '.verser-voyage-button', function () {
+        $(document).on('click', '.ajouter-voyage-button', function () {
             const data = $(this).data();
-            $('#verserVoyageForm').attr('action', data.url);
-            $('#verser_voyage_libelle').text(data.libelle);
-            $('#verser_date_versement').val('{{ date('Y-m-d') }}');
-            $('#verser_montant').val('');
-            $('#verser_observations').val('');
+            $('#ajouterVoyageForm').attr('action', data.url);
+            $('#ajouter_voyage_libelle').text(data.libelle);
+            $('#ajouter_voyage_date').val('{{ date('Y-m-d') }}');
+            $('#ajouter_voyage_montant').val('');
+            $('#ajouter_voyage_observations').val('');
         });
 
-        // Clarifie le champ Montant quand on choisit "Voyage" : saisie manuelle
-        // unique, pas un tarif périodique (n'affecte pas les autres périodicités).
+        // Un voyage n'a pas de montant à la création de l'affectation : chaque
+        // voyage (date + montant) s'ajoute ensuite via le bouton dédié.
+        // N'affecte pas les autres périodicités (montant toujours requis).
         $('#periodicite').on('change', function () {
             const estVoyage = $(this).val() === 'voyage';
-            $('#montant_journalier_label').html(estVoyage
-                ? 'Montant dû pour le voyage <span class="text-danger">*</span>'
-                : 'Montant <span class="text-danger">*</span>');
-            $('#montant_journalier_hint').text(estVoyage
-                ? 'Montant que le chauffeur doit verser pour ce voyage (saisi manuellement, non calculé).'
-                : 'Montant dû par période choisie (jour, mois, trimestre, semestre).');
+            $('#montant_journalier_row').toggle(!estVoyage);
+            $('#montant_journalier').prop('required', !estVoyage);
+            $('#voyage_creation_hint').toggle(estVoyage);
+            $('#reaffectation_hint').toggle(!estVoyage);
         });
+
+        $('#edit_periodicite').on('change', function () {
+            $('#edit_montant_journalier_row').toggle($(this).val() !== 'voyage');
+        });
+
+        // État initial au chargement (utile si le formulaire "Nouvelle
+        // affectation" se rouvre après une erreur avec "voyage" déjà choisi).
+        $('#periodicite').trigger('change');
 
         $(document).on('submit', '.delete-affectation-form', function (e) {
             e.preventDefault();

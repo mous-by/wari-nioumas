@@ -14,9 +14,10 @@ class Affectation extends Model
      * « journalier » = comportement d'origine (montant × jours). Les périodiques
      * (hebdomadaire/mensuel/trimestriel/semestriel) sont des forfaits par période
      * (ex. camionettes, qui ne se paient pas au jour) : le montant est dû en
-     * entier au début de chaque période. « voyage » est un forfait UNIQUE, non
-     * récurrent, dont le montant dû est saisi manuellement (pas de calcul par
-     * jours/périodes) — voir Chauffeur::montantDu() et reliquat() ci-dessous.
+     * entier au début de chaque période. « voyage » ne fixe aucun montant à la
+     * création : chaque trajet est ajouté séparément (date + montant) via
+     * voyages(), et s'accumule au total du chauffeur — voir
+     * Chauffeur::totalVoyages().
      */
     public const PERIODICITES = ['journalier', 'hebdomadaire', 'mensuel', 'trimestriel', 'semestriel', 'voyage'];
 
@@ -57,34 +58,14 @@ class Affectation extends Model
     }
 
     /**
-     * Versements rattachés spécifiquement à cette affectation (utilisé pour
-     * les affectations « voyage » : reliquat propre à ce voyage, indépendant
-     * du solde global du chauffeur sur la page Recettes).
+     * Voyages effectués sous cette affectation (uniquement pertinent pour
+     * periodicite === 'voyage') : chacun a sa propre date et son propre
+     * montant. Le total cumulé se calcule au niveau du CHAUFFEUR, toutes
+     * affectations confondues — voir Chauffeur::totalVoyages().
      */
-    public function versements()
+    public function voyages()
     {
-        return $this->hasMany(Versement::class)->latest('date_versement');
-    }
-
-    /**
-     * Total déjà versé pour CETTE affectation (pertinent surtout pour un
-     * voyage : les autres périodicités ne lient généralement pas leurs
-     * versements à une affectation précise).
-     */
-    public function montantVerse(): float
-    {
-        return (float) ($this->relationLoaded('versements')
-            ? $this->versements->sum('montant')
-            : $this->versements()->sum('montant'));
-    }
-
-    /**
-     * Reste à verser pour cette affectation (montant dû − déjà versé).
-     * Peut être négatif en cas de trop-perçu.
-     */
-    public function reliquat(): float
-    {
-        return (float) $this->montant_journalier - $this->montantVerse();
+        return $this->hasMany(Voyage::class)->latest('date_voyage');
     }
 
     public function estActive(): bool

@@ -109,6 +109,25 @@ class Chauffeur extends Model
     }
 
     /**
+     * Tous les voyages effectués par ce chauffeur, toutes affectations
+     * confondues (même après un changement de véhicule).
+     */
+    public function voyages()
+    {
+        return $this->hasManyThrough(Voyage::class, Affectation::class);
+    }
+
+    /**
+     * Total cumulé des montants de voyage de ce chauffeur (somme à vie,
+     * ne se remet jamais à zéro — indépendant du solde/compte de la page
+     * Recettes, qui ne concerne que journalier/hebdomadaire/mensuel/etc.).
+     */
+    public function totalVoyages(): float
+    {
+        return (float) $this->voyages()->sum('montant');
+    }
+
+    /**
      * Montant journalier attendu du chauffeur, issu de son affectation active.
      */
     public function montantJournalierActuel(): float
@@ -149,14 +168,6 @@ class Chauffeur extends Model
 
             if ($debut->gt($jusquA)) {
                 continue; // affectation qui commence dans le futur
-            }
-
-            if ($affectation->periodicite === 'voyage') {
-                // Forfait voyage : montant dû une seule fois (saisi manuellement),
-                // jamais multiplié par les jours écoulés.
-                $total += (float) $affectation->montant_journalier;
-
-                continue;
             }
 
             $fin = $affectation->date_fin

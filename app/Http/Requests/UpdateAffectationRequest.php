@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateAffectationRequest extends FormRequest
 {
@@ -14,7 +15,7 @@ class UpdateAffectationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'montant_journalier' => ['required', 'numeric', 'min:0'],
+            'montant_journalier' => [Rule::requiredIf(fn () => $this->input('periodicite') !== 'voyage'), 'nullable', 'numeric', 'min:0'],
             'periodicite' => ['required', 'in:'.implode(',', \App\Models\Affectation::PERIODICITES)],
             'date_debut' => ['required', 'date'],
             'observations' => ['nullable', 'string'],

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreAffectationRequest extends FormRequest
 {
@@ -16,7 +17,9 @@ class StoreAffectationRequest extends FormRequest
         return [
             'vehicule_id' => ['required', 'exists:vehicules,id'],
             'chauffeur_id' => ['required', 'exists:chauffeurs,id'],
-            'montant_journalier' => ['required', 'numeric', 'min:0'],
+            // Pas de montant à la création d'une affectation "voyage" : chaque
+            // voyage a le sien, ajouté séparément (StoreVoyageRequest).
+            'montant_journalier' => [Rule::requiredIf(fn () => $this->input('periodicite') !== 'voyage'), 'nullable', 'numeric', 'min:0'],
             'periodicite' => ['required', 'in:'.implode(',', \App\Models\Affectation::PERIODICITES)],
             'date_debut' => ['required', 'date'],
             'observations' => ['nullable', 'string'],

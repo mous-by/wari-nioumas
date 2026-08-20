@@ -84,6 +84,16 @@
                                 @endif
                             </td>
                         </tr>
+                        @if ($chauffeur->affectations->contains('periodicite', 'voyage'))
+                            <tr>
+                                <th>Total voyages</th>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        {{ number_format($chauffeur->totalVoyages(), 0, ',', ' ') }} FCFA
+                                    </span>
+                                </td>
+                            </tr>
+                        @endif
                         <tr>
                             <th>Observations</th>
                             <td>{{ $chauffeur->observations ?: '—' }}</td>

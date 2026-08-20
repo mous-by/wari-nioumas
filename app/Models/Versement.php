@@ -25,7 +25,6 @@ class Versement extends Model
 
     protected $fillable = [
         'chauffeur_id',
-        'affectation_id',
         'date_versement',
         'montant',
         'observations',
