@@ -46,7 +46,11 @@
                         <tr>
                             <td>@if ($affectation->vehicule)<a href="{{ route('vehicules.show', $affectation->vehicule) }}">{{ $affectation->vehicule->immatriculation }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
                             <td>@if ($affectation->chauffeur)<a href="{{ route('chauffeurs.show', $affectation->chauffeur) }}">{{ $affectation->chauffeur->nom_complet }}</a>@else<span class="text-muted">— supprimé</span>@endif</td>
-                            <td>{{ number_format((float) $affectation->montant_journalier, 0, ',', ' ') }} FCFA <small class="text-muted">{{ $affectation->periodiciteSuffixe() }}</small></td>
+                            @if ($affectation->periodicite === 'voyage')
+                                <td class="text-muted">—</td>
+                            @else
+                                <td>{{ number_format((float) $affectation->montant_journalier, 0, ',', ' ') }} FCFA <small class="text-muted">{{ $affectation->periodiciteSuffixe() }}</small></td>
+                            @endif
                             @if ($affectation->periodicite === 'voyage' && $affectation->chauffeur)
                                 <td>
                                     <span class="badge bg-primary">
