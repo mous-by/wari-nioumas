@@ -57,9 +57,13 @@ class RecetteController extends Controller
                 'semestre' => $verseSur($debutSemestre, $debutSemestre->copy()->addMonths(6)->subDay()),
                 'annee' => $verseSur($now->copy()->startOfYear(), $now->copy()->endOfYear()),
             ],
+            // verseGlobal reprend TOUS les versements (y compris les voyages,
+            // comme les totaux par période ci-dessus) : $comptes exclut les
+            // chauffeurs "voyage uniquement", donc sommer 'verse' dessus
+            // sous-compterait leurs versements de voyage.
             'duGlobal' => $comptes->sum('du'),
-            'verseGlobal' => $comptes->sum('verse'),
-            'soldeGlobal' => $comptes->sum('solde'),
+            'verseGlobal' => $verseGlobal = (float) Versement::sum('montant'),
+            'soldeGlobal' => $comptes->sum('du') - $verseGlobal,
         ]);
     }
 

@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateAffectationRequest;
 use App\Models\Affectation;
 use App\Models\Chauffeur;
 use App\Models\Vehicule;
+use App\Models\Versement;
 use App\Models\Voyage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
@@ -83,15 +84,30 @@ class AffectationController extends Controller
 
     /**
      * Ajoute un voyage (date + montant) à une affectation « voyage ». Son
-     * montant s'accumule automatiquement au total du chauffeur.
+     * montant s'accumule automatiquement au total du chauffeur, ET crée un
+     * versement classique (chauffeur + date + montant) pour que l'argent
+     * entre en Caisse et apparaisse dans l'historique des versements de la
+     * page Recettes, comme un versement journalier/mensuel.
      */
     public function ajouterVoyage(StoreVoyageRequest $request, Affectation $affectation): RedirectResponse
     {
-        Voyage::create([
-            ...$request->validated(),
-            'affectation_id' => $affectation->id,
-            'user_id' => auth()->id(),
-        ]);
+        $data = $request->validated();
+
+        DB::transaction(function () use ($data, $affectation) {
+            Voyage::create([
+                ...$data,
+                'affectation_id' => $affectation->id,
+                'user_id' => auth()->id(),
+            ]);
+
+            Versement::create([
+                'chauffeur_id' => $affectation->chauffeur_id,
+                'date_versement' => $data['date_voyage'],
+                'montant' => $data['montant'],
+                'observations' => trim('Voyage — '.($affectation->vehicule?->immatriculation ?? '').' '.($data['observations'] ?? '')),
+                'user_id' => auth()->id(),
+            ]);
+        });
 
         return redirect()->route('affectations.index')->with('status', 'Voyage enregistré avec succès.');
     }
