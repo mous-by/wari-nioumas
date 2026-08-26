@@ -4,6 +4,7 @@ use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\AffectationController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\AccidentController;
+use App\Http\Controllers\AttestationVenteController;
 use App\Http\Controllers\BulletinController;
 use App\Http\Controllers\CaisseController;
 use App\Http\Controllers\ChauffeurController;
@@ -39,6 +40,24 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/configuration/signature', [\App\Http\Controllers\SignatureController::class, 'edit'])->name('signature.edit');
     Route::put('/configuration/signature', [\App\Http\Controllers\SignatureController::class, 'update'])->name('signature.update');
+
+    Route::middleware('permission:attestations.voir')->group(function () {
+        Route::get('/configuration/attestations', [AttestationVenteController::class, 'index'])->name('attestations.index');
+    });
+    Route::middleware('permission:attestations.gerer')->group(function () {
+        Route::get('/configuration/attestations/creer', [AttestationVenteController::class, 'create'])->name('attestations.create');
+        Route::post('/configuration/attestations', [AttestationVenteController::class, 'store'])->name('attestations.store');
+    });
+    Route::middleware('permission:attestations.voir')->group(function () {
+        Route::get('/configuration/attestations/{attestation}', [AttestationVenteController::class, 'show'])->name('attestations.show');
+        Route::get('/configuration/attestations/{attestation}/pdf', [AttestationVenteController::class, 'pdf'])->name('attestations.pdf');
+    });
+    Route::middleware('permission:attestations.gerer')->group(function () {
+        Route::get('/configuration/attestations/{attestation}/modifier', [AttestationVenteController::class, 'edit'])->name('attestations.edit');
+        Route::put('/configuration/attestations/{attestation}', [AttestationVenteController::class, 'update'])->name('attestations.update');
+        Route::patch('/configuration/attestations/{attestation}/valider', [AttestationVenteController::class, 'valider'])->name('attestations.valider');
+        Route::delete('/configuration/attestations/{attestation}', [AttestationVenteController::class, 'destroy'])->name('attestations.destroy');
+    });
 
     // Documentation / guide d'utilisation (accessible à tous les utilisateurs connectés)
     Route::view('/documentation', 'documentation')->name('documentation');

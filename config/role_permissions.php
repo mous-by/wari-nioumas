@@ -76,6 +76,8 @@ return [
         'mandats.gerer',
         'mandats.signer',
         'validations.voir',
+        'attestations.voir',
+        'attestations.gerer',
     ],
 
     'responsable_parc' => [
@@ -164,6 +166,8 @@ return [
         'bulletins.gerer',
         'mandats.voir',
         'mandats.gerer',
+        'attestations.voir',
+        'attestations.gerer',
     ],
 
     'caissier' => [

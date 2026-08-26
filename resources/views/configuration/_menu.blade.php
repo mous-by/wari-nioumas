@@ -23,6 +23,11 @@
             <a href="{{ route('signature.edit') }}" class="list-group-item py-2 {{ request()->routeIs('signature.*') ? 'active' : '' }}">
                 <i class='bx bx-pen me-2'></i><span>Signature &amp; cachet</span>
             </a>
+            @can('attestations.voir')
+                <a href="{{ route('attestations.index') }}" class="list-group-item py-2 {{ request()->routeIs('attestations.*') ? 'active' : '' }}">
+                    <i class='bx bx-file-blank me-2'></i><span>Attestations de vente</span>
+                </a>
+            @endcan
         </div>
     </div>
 </div>
