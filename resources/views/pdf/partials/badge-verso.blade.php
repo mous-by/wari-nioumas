@@ -47,7 +47,7 @@
         <table class="verso-infos">
             <tr><td class="lbl">N° de permis</td><td>{{ $chauffeur->permis_numero }}</td></tr>
             <tr><td class="lbl">Permis valide</td><td>{{ $chauffeur->permis_date_validite->format('d/m/Y') }}</td></tr>
-            <tr><td class="lbl">Embauche</td><td>{{ $chauffeur->date_embauche->format('d/m/Y') }}</td></tr>
+            <tr><td class="lbl">Depuis</td><td>{{ $chauffeur->date_embauche->format('d/m/Y') }}</td></tr>
         </table>
     </div>
 
