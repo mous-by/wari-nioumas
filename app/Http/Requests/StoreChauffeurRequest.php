@@ -26,6 +26,7 @@ class StoreChauffeurRequest extends FormRequest
         return [
             'nom' => ['required', 'string', 'max:255'],
             'prenom' => ['required', 'string', 'max:255'],
+            'photo' => ['nullable', 'image', 'max:2048'],
             'date_naissance' => ['nullable', 'date', 'before:today'],
             'lieu_naissance' => ['nullable', 'string', 'max:255'],
             'telephone' => ['required', 'string', new MalianPhone(), 'unique:chauffeurs,telephone'],

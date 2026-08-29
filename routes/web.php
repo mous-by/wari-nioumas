@@ -95,7 +95,10 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('permission:chauffeurs.voir')->group(function () {
         Route::get('/chauffeurs', [ChauffeurController::class, 'index'])->name('chauffeurs.index');
+        Route::get('/chauffeurs/pdf', [ChauffeurController::class, 'pdf'])->name('chauffeurs.pdf');
+        Route::get('/chauffeurs/badges', [ChauffeurController::class, 'badges'])->name('chauffeurs.badges');
         Route::get('/chauffeurs/{chauffeur}', [ChauffeurController::class, 'show'])->name('chauffeurs.show');
+        Route::get('/chauffeurs/{chauffeur}/badge', [ChauffeurController::class, 'badge'])->name('chauffeurs.badge');
     });
 
     Route::middleware('permission:chauffeurs.creer')->group(function () {

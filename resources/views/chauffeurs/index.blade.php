@@ -13,13 +13,21 @@
                 </ol>
             </nav>
         </div>
-        @can('chauffeurs.creer')
-            <div class="ms-auto">
+        <div class="ms-auto d-flex gap-2">
+            @can('chauffeurs.voir')
+                <a href="{{ route('chauffeurs.pdf') }}" target="_blank" class="btn btn-secondary">
+                    <i class='bx bxs-file-pdf'></i> Liste PDF
+                </a>
+                <a href="{{ route('chauffeurs.badges') }}" target="_blank" class="btn btn-dark">
+                    <i class='bx bx-id-card'></i> Badges (tous)
+                </a>
+            @endcan
+            @can('chauffeurs.creer')
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addChauffeurModal">
                     <i class='bx bxs-plus-square'></i> Chauffeur
                 </button>
-            </div>
-        @endcan
+            @endcan
+        </div>
     </div>
     <hr />
 
@@ -31,6 +39,7 @@
             <table id="chauffeurs-table" class="table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>MATRICULE</th>
                         <th>NOM ET PRENOM</th>
                         <th>TELEPHONE</th>
@@ -42,6 +51,13 @@
                 <tbody>
                     @foreach ($chauffeurs as $chauffeur)
                         <tr>
+                            <td>
+                                @if ($chauffeur->photo_url)
+                                    <img src="{{ $chauffeur->photo_url }}" class="rounded-circle" style="width:32px;height:32px;object-fit:cover;" alt="">
+                                @else
+                                    <span class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center" style="width:32px;height:32px;font-size:.7rem;">{{ $chauffeur->initiales }}</span>
+                                @endif
+                            </td>
                             <td>{{ $chauffeur->matricule }}</td>
                             <td>{{ $chauffeur->nom_complet }}</td>
                             <td>{{ $chauffeur->telephone }}</td>
@@ -55,10 +71,15 @@
                                 <a href="{{ route('chauffeurs.show', $chauffeur) }}" class="btn btn-primary btn-sm" title="Voir la fiche">
                                     <i class='bx bx-show'></i>
                                 </a>
+                                <a href="{{ route('chauffeurs.badge', $chauffeur) }}" target="_blank" class="btn btn-dark btn-sm" title="Badge professionnel">
+                                    <i class='bx bx-id-card'></i>
+                                </a>
                                 @can('chauffeurs.modifier')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-chauffeur-button" title="Modifier"
                                        data-bs-toggle="modal" data-bs-target="#editChauffeurModal"
                                        data-url="{{ route('chauffeurs.update', $chauffeur) }}"
+                                       data-photo_url="{{ $chauffeur->photo_url }}"
+                                       data-initiales="{{ $chauffeur->initiales }}"
                                        data-matricule="{{ $chauffeur->matricule }}"
                                        data-nom="{{ $chauffeur->nom }}"
                                        data-prenom="{{ $chauffeur->prenom }}"
@@ -96,7 +117,7 @@
         <div class="modal fade" id="addChauffeurModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form method="POST" action="{{ route('chauffeurs.store') }}">
+                    <form method="POST" action="{{ route('chauffeurs.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-header">
                             <h5 class="modal-title">Nouveau Chauffeur</h5>
@@ -119,7 +140,7 @@
         <div class="modal fade" id="editChauffeurModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form method="POST" id="editChauffeurForm" action="">
+                    <form method="POST" id="editChauffeurForm" action="" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         <div class="modal-header">
@@ -159,6 +180,30 @@
              'permis_date_validite', 'date_embauche', 'statut', 'observations'].forEach(function (field) {
                 $('#edit_' + field).val(data[field]);
             });
+
+            // Photo : on repart de celle déjà enregistrée (le champ fichier
+            // ne peut pas être pré-rempli par le navigateur, juste l'aperçu).
+            $('#edit_photo').val('');
+            if (data.photo_url) {
+                $('#edit_photo-fallback').hide();
+                $('#edit_photo-preview').attr('src', data.photo_url).show();
+            } else {
+                $('#edit_photo-preview').hide();
+                $('#edit_photo-fallback').text(data.initiales || '?').show();
+            }
+        });
+
+        $(document).on('change', '#photo, #edit_photo', function () {
+            const prefix = this.id === 'edit_photo' ? 'edit_' : '';
+            const file = this.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#' + prefix + 'photo-fallback').hide();
+                $('#' + prefix + 'photo-preview').attr('src', e.target.result).show();
+            };
+            reader.readAsDataURL(file);
         });
 
         $(document).on('submit', '.delete-chauffeur-form', function (e) {

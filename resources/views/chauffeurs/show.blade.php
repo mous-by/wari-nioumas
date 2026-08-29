@@ -14,7 +14,10 @@
                 </ol>
             </nav>
         </div>
-        <div class="ms-auto">
+        <div class="ms-auto d-flex gap-2">
+            <a href="{{ route('chauffeurs.badge', $chauffeur) }}" target="_blank" class="btn btn-dark px-4">
+                <i class='bx bx-id-card me-2'></i>Badge
+            </a>
             <a href="{{ route('chauffeurs.index') }}" class="btn btn-light px-4">
                 <i class='bx bx-arrow-back me-2'></i>Retour
             </a>
@@ -29,6 +32,13 @@
                     <h6 class="text-white mb-0"><i class='bx bx-id-card me-2'></i>FICHE CHAUFFEUR</h6>
                 </div>
                 <div class="card-body">
+                    <div class="text-center mb-3">
+                        @if ($chauffeur->photo_url)
+                            <img src="{{ $chauffeur->photo_url }}" class="rounded-circle border" style="width:100px;height:100px;object-fit:cover;" alt="">
+                        @else
+                            <span class="rounded-circle bg-primary text-white d-inline-flex align-items-center justify-content-center border" style="width:100px;height:100px;font-size:2rem;">{{ $chauffeur->initiales }}</span>
+                        @endif
+                    </div>
                     <table class="table table-borderless mb-0">
                         <tr>
                             <th width="45%">Matricule</th>

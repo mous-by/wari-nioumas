@@ -1,4 +1,27 @@
-@php $prefix = $prefix ?? ''; @endphp
+@php
+    $prefix = $prefix ?? '';
+    $chauffeur = $chauffeur ?? null;
+@endphp
+
+<div class="text-center mb-3">
+    <img id="{{ $prefix }}photo-preview"
+         src="{{ $chauffeur?->photo_url }}"
+         class="rounded-circle border"
+         style="width: 90px; height: 90px; object-fit: cover; display: {{ $chauffeur?->photo_url ? 'inline-block' : 'none' }};"
+         alt="Photo du chauffeur">
+    <div id="{{ $prefix }}photo-fallback"
+         class="rounded-circle border bg-primary text-white align-items-center justify-content-center mx-auto"
+         style="width: 90px; height: 90px; font-size: 2rem; display: {{ $chauffeur?->photo_url ? 'none' : 'inline-flex' }};">
+        {{ $chauffeur?->initiales ?? '?' }}
+    </div>
+    <div class="mt-2">
+        <label for="{{ $prefix }}photo" class="btn btn-outline-secondary btn-sm">
+            <i class='bx bx-camera me-1'></i> Photo du chauffeur
+        </label>
+        <input type="file" id="{{ $prefix }}photo" name="photo" accept="image/*" class="d-none">
+        <div class="form-text">Optionnel — JPG ou PNG, 2 Mo maximum.</div>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-6 mb-3">

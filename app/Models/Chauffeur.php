@@ -15,6 +15,7 @@ class Chauffeur extends Model
         'matricule',
         'nom',
         'prenom',
+        'photo',
         'date_naissance',
         'lieu_naissance',
         'telephone',
@@ -258,5 +259,29 @@ class Chauffeur extends Model
     public function getNomCompletAttribute(): string
     {
         return "{$this->prenom} {$this->nom}";
+    }
+
+    public function getPhotoUrlAttribute(): ?string
+    {
+        return $this->photo ? asset('storage/'.$this->photo) : null;
+    }
+
+    /**
+     * Chemin disque de la photo, pour les PDF (dompdf). Contrairement à
+     * photo_url (une URL HTTP), dompdf ne va pas chercher les images à
+     * distance par défaut : il faut un chemin de fichier local.
+     */
+    public function getPhotoPathAttribute(): ?string
+    {
+        return $this->photo ? storage_path('app/public/'.$this->photo) : null;
+    }
+
+    /**
+     * Initiales (ex. "MT") utilisées comme repli quand il n'y a pas de photo
+     * (avatar sur la fiche, le badge...).
+     */
+    public function getInitialesAttribute(): string
+    {
+        return mb_strtoupper(mb_substr($this->prenom, 0, 1).mb_substr($this->nom, 0, 1));
     }
 }
