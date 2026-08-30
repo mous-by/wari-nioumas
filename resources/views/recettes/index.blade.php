@@ -264,7 +264,7 @@
 
 @push('scripts')
     <script>
-        $('#comptes-table').DataTable();
+        $('#comptes-table').DataTable({ order: [[0, 'asc']] });
         $('#versements-table').DataTable();
 
         document.querySelectorAll('#comptes-table [title], #versements-table [title]').forEach(el => new bootstrap.Tooltip(el));

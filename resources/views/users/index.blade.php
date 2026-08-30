@@ -224,7 +224,7 @@
 
 @push('scripts')
     <script>
-        $('#users-table').DataTable();
+        $('#users-table').DataTable({ order: [[0, 'asc']] });
 
         document.querySelectorAll('#users-table [title]').forEach(function (el) {
             new bootstrap.Tooltip(el);

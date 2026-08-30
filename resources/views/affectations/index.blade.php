@@ -301,7 +301,7 @@
 
 @push('scripts')
     <script>
-        $('#affectations-table').DataTable({ order: [[3, 'desc']] });
+        $('#affectations-table').DataTable({ order: [[0, 'asc']] });
 
         document.querySelectorAll('#affectations-table [title]').forEach(el => new bootstrap.Tooltip(el));
 

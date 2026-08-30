@@ -75,6 +75,6 @@
 
 @push('scripts')
     <script>
-        $('#attestations-table').DataTable({ order: [[4, 'desc']] });
+        $('#attestations-table').DataTable({ order: [[2, 'asc']] });
     </script>
 @endpush

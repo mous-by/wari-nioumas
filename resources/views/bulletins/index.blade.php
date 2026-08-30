@@ -222,7 +222,7 @@
 
 @push('scripts')
     <script>
-        $('#bulletins-table').DataTable();
+        $('#bulletins-table').DataTable({ order: [[1, 'asc']] });
 
         document.querySelectorAll('#bulletins-table [title]').forEach(el => new bootstrap.Tooltip(el));
 

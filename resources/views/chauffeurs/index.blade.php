@@ -169,7 +169,7 @@
 
 @push('scripts')
     <script>
-        $('#chauffeurs-table').DataTable();
+        $('#chauffeurs-table').DataTable({ order: [[2, 'asc']] });
 
         document.querySelectorAll('#chauffeurs-table [title]').forEach(el => new bootstrap.Tooltip(el));
 

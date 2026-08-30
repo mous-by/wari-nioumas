@@ -188,7 +188,7 @@
 
 @push('scripts')
     <script>
-        $('#absences-table').DataTable();
+        $('#absences-table').DataTable({ order: [[0, 'asc']] });
 
         document.querySelectorAll('#absences-table [title]').forEach(el => new bootstrap.Tooltip(el));
 
