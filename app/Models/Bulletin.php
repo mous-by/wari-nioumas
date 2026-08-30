@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\CaisseAuto;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -52,6 +53,24 @@ class Bulletin extends Model
                 + (float) $bulletin->primes
                 - (float) $bulletin->retenues;
         });
+
+        // Alimentation automatique de la caisse (sortie) une fois le bulletin
+        // marqué "payé" — un brouillon ou une simple validation ne représente
+        // pas encore une sortie d'argent réelle.
+        $sync = function (Bulletin $bulletin) {
+            if ($bulletin->statut === 'paye') {
+                CaisseAuto::synchroniser(
+                    $bulletin, 'sortie', 'Salaire — '.$bulletin->personnel->nom_complet.' ('.$bulletin->periode_libelle.')',
+                    (float) $bulletin->net_a_payer, now(), $bulletin->user_id
+                );
+            } else {
+                CaisseAuto::supprimer($bulletin);
+            }
+        };
+
+        static::created($sync);
+        static::updated($sync);
+        static::deleted(fn (Bulletin $bulletin) => CaisseAuto::supprimer($bulletin));
     }
 
     public function personnel()
