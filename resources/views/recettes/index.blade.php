@@ -134,6 +134,11 @@
                             <td>{{ $fmt($versement->montant) }}</td>
                             <td>{{ $versement->observations ?? '—' }}</td>
                             <td class="text-nowrap">
+                                @can('recettes.voir')
+                                    <a href="{{ route('recettes.recu', $versement) }}" target="_blank" class="btn btn-secondary btn-sm" title="Reçu">
+                                        <i class='bx bxs-file-pdf'></i>
+                                    </a>
+                                @endcan
                                 @can('recettes.modifier')
                                     <a href="javascript:;" class="btn btn-success btn-sm edit-versement-button"
                                        data-bs-toggle="modal" data-bs-target="#editVersementModal"

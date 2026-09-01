@@ -6,6 +6,7 @@ use App\Http\Requests\StoreVersementRequest;
 use App\Http\Requests\UpdateVersementRequest;
 use App\Models\Chauffeur;
 use App\Models\Versement;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use Illuminate\View\View;
@@ -89,5 +90,14 @@ class RecetteController extends Controller
         $versement->delete();
 
         return back()->with('status', 'Versement supprimé avec succès.');
+    }
+
+    public function recu(Versement $versement)
+    {
+        $versement->load(['chauffeur', 'user.roles']);
+
+        $pdf = Pdf::loadView('pdf.recu-versement', ['versement' => $versement])->setPaper('a4', 'portrait');
+
+        return $pdf->stream('recu-versement-'.$versement->id.'.pdf');
     }
 }

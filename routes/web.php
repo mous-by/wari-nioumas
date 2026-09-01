@@ -153,6 +153,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('permission:recettes.voir')->group(function () {
         Route::get('/recettes', [RecetteController::class, 'index'])->name('recettes.index');
+        Route::get('/recettes/{versement}/recu', [RecetteController::class, 'recu'])->name('recettes.recu');
     });
 
     Route::middleware('permission:recettes.creer')->group(function () {
