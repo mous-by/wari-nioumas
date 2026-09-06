@@ -7,6 +7,7 @@ use App\Http\Controllers\AccidentController;
 use App\Http\Controllers\AttestationVenteController;
 use App\Http\Controllers\BulletinController;
 use App\Http\Controllers\CaisseController;
+use App\Http\Controllers\CasSocialController;
 use App\Http\Controllers\ChauffeurController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepenseController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\MandatController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\StatistiqueController;
+use App\Http\Controllers\TypeCasSocialController;
 use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -301,6 +303,44 @@ Route::middleware('auth')->group(function () {
         Route::post('/bulletins/generer-mois', [BulletinController::class, 'genererMois'])->name('bulletins.generer-mois');
         Route::put('/bulletins/{bulletin}', [BulletinController::class, 'update'])->name('bulletins.update');
         Route::delete('/bulletins/{bulletin}', [BulletinController::class, 'destroy'])->name('bulletins.destroy');
+    });
+
+    // Module Personnel — Cas sociaux
+    // ⚠️ Les segments littéraux (/types, /creer) doivent être déclarés avant
+    // /cas-sociaux/{casSocial}, sinon Laravel essaie de lier "types"/"creer"
+    // comme identifiant de cas social.
+    Route::middleware('permission:cas_sociaux.gerer_types')->group(function () {
+        Route::get('/cas-sociaux/types', [TypeCasSocialController::class, 'index'])->name('cas-sociaux.types.index');
+        Route::post('/cas-sociaux/types', [TypeCasSocialController::class, 'store'])->name('cas-sociaux.types.store');
+        Route::put('/cas-sociaux/types/{type}', [TypeCasSocialController::class, 'update'])->name('cas-sociaux.types.update');
+        Route::patch('/cas-sociaux/types/{type}/toggle', [TypeCasSocialController::class, 'toggle'])->name('cas-sociaux.types.toggle');
+    });
+    Route::middleware('permission:cas_sociaux.creer')->group(function () {
+        Route::get('/cas-sociaux/creer', [CasSocialController::class, 'create'])->name('cas-sociaux.create');
+        Route::post('/cas-sociaux', [CasSocialController::class, 'store'])->name('cas-sociaux.store');
+        Route::post('/cas-sociaux/{casSocial}/soumettre', [CasSocialController::class, 'soumettre'])->name('cas-sociaux.soumettre');
+        Route::post('/cas-sociaux/{casSocial}/documents', [CasSocialController::class, 'storeDocument'])->name('cas-sociaux.documents.store');
+    });
+    Route::middleware('permission:cas_sociaux.voir')->group(function () {
+        Route::get('/cas-sociaux', [CasSocialController::class, 'index'])->name('cas-sociaux.index');
+        Route::get('/cas-sociaux/{casSocial}', [CasSocialController::class, 'show'])->name('cas-sociaux.show');
+        Route::get('/cas-sociaux/{casSocial}/pdf', [CasSocialController::class, 'pdf'])->name('cas-sociaux.pdf');
+    });
+    Route::middleware('permission:cas_sociaux.modifier')->group(function () {
+        Route::get('/cas-sociaux/{casSocial}/modifier', [CasSocialController::class, 'edit'])->name('cas-sociaux.edit');
+        Route::put('/cas-sociaux/{casSocial}', [CasSocialController::class, 'update'])->name('cas-sociaux.update');
+        Route::delete('/cas-sociaux/documents/{document}', [CasSocialController::class, 'destroyDocument'])->name('cas-sociaux.documents.destroy');
+    });
+    Route::middleware('permission:cas_sociaux.approuver')->group(function () {
+        Route::patch('/cas-sociaux/{casSocial}/approuver', [CasSocialController::class, 'approuver'])->name('cas-sociaux.approuver');
+        Route::patch('/cas-sociaux/{casSocial}/rejeter', [CasSocialController::class, 'rejeter'])->name('cas-sociaux.rejeter');
+        Route::patch('/cas-sociaux/{casSocial}/reprendre', [CasSocialController::class, 'reprendre'])->name('cas-sociaux.reprendre');
+        // L'annulation d'un cas déjà payé exige aussi cas_sociaux.payer (vérifié
+        // dans le contrôleur) — cette route ne suffit qu'aux annulations pré-paiement.
+        Route::patch('/cas-sociaux/{casSocial}/annuler', [CasSocialController::class, 'annuler'])->name('cas-sociaux.annuler');
+    });
+    Route::middleware('permission:cas_sociaux.payer')->group(function () {
+        Route::patch('/cas-sociaux/{casSocial}/payer', [CasSocialController::class, 'payer'])->name('cas-sociaux.payer');
     });
 
     // Module Salaires — Mandats de paiement

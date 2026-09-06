@@ -56,4 +56,29 @@ class CaisseAuto
             ->where('source_id', $source->getKey())
             ->delete();
     }
+
+    /**
+     * Annule un mouvement déjà comptée sans jamais le supprimer ni le
+     * modifier : crée une contre-passation (mouvement inverse, même
+     * montant, même source) qui pointe vers l'original via reversal_of_id.
+     * Idempotent : un mouvement déjà contre-passé renvoie sa contre-passation
+     * existante au lieu d'en créer une deuxième.
+     */
+    public static function contrepasser(MouvementCaisse $original, string $libelle, ?int $userId): MouvementCaisse
+    {
+        if ($original->reversal) {
+            return $original->reversal;
+        }
+
+        return $original->caisse->mouvements()->create([
+            'type' => $original->type === 'sortie' ? 'entree' : 'sortie',
+            'libelle' => $libelle,
+            'montant' => $original->montant,
+            'date_mouvement' => now(),
+            'user_id' => $userId,
+            'source_type' => $original->source_type,
+            'source_id' => $original->source_id,
+            'reversal_of_id' => $original->id,
+        ]);
+    }
 }

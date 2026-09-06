@@ -67,6 +67,11 @@ class Personnel extends Model
         return $this->hasMany(Bulletin::class)->latest('periode_annee')->latest('periode_mois');
     }
 
+    public function casSociaux()
+    {
+        return $this->hasMany(CasSocial::class)->latest('date_cas');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

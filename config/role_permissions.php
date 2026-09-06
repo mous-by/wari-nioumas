@@ -78,6 +78,15 @@ return [
         'validations.voir',
         'attestations.voir',
         'attestations.gerer',
+        'cas_sociaux.voir',
+        'cas_sociaux.creer',
+        'cas_sociaux.modifier',
+        'cas_sociaux.approuver',
+        'cas_sociaux.rejeter',
+        'cas_sociaux.payer',
+        'cas_sociaux.voir_montants',
+        'cas_sociaux.exporter',
+        'cas_sociaux.gerer_types',
     ],
 
     'responsable_parc' => [
@@ -143,6 +152,11 @@ return [
         'personnel.modifier',
         'bulletins.voir',
         'mandats.voir',
+        'cas_sociaux.voir',
+        'cas_sociaux.creer',
+        'cas_sociaux.modifier',
+        'cas_sociaux.voir_montants',
+        'cas_sociaux.exporter',
     ],
 
     'comptable' => [
@@ -168,6 +182,11 @@ return [
         'mandats.gerer',
         'attestations.voir',
         'attestations.gerer',
+        'cas_sociaux.voir',
+        'cas_sociaux.creer',
+        'cas_sociaux.modifier',
+        'cas_sociaux.voir_montants',
+        'cas_sociaux.exporter',
     ],
 
     'caissier' => [
@@ -186,5 +205,9 @@ return [
         'caisse.ouvrir',
         'caisse.fermer',
         'caisse.mouvementer',
+        'cas_sociaux.voir',
+        'cas_sociaux.payer',
+        'cas_sociaux.voir_montants',
+        'cas_sociaux.exporter',
     ],
 ];

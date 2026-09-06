@@ -125,6 +125,15 @@
             </li>
         @endcan
 
+        @can('cas_sociaux.voir')
+            <li>
+                <a href="{{ route('cas-sociaux.index') }}" class="{{ request()->routeIs('cas-sociaux.*') ? 'mm-active' : '' }}">
+                    <div class="parent-icon"><i class='bx bx-heart'></i></div>
+                    <div class="menu-title">Cas sociaux</div>
+                </a>
+            </li>
+        @endcan
+
         @can('bulletins.voir')
             <li>
                 <a href="{{ route('bulletins.index') }}" class="{{ request()->routeIs('bulletins.*') ? 'mm-active' : '' }}">

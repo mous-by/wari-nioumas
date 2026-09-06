@@ -23,6 +23,7 @@ class MouvementCaisse extends Model
         'user_id',
         'source_type',
         'source_id',
+        'reversal_of_id',
     ];
 
     protected function casts(): array
@@ -48,12 +49,32 @@ class MouvementCaisse extends Model
         return $this->morphTo();
     }
 
+    public function reversalOf()
+    {
+        return $this->belongsTo(self::class, 'reversal_of_id');
+    }
+
+    public function reversal()
+    {
+        return $this->hasOne(self::class, 'reversal_of_id');
+    }
+
+    public function scopeOriginales($query)
+    {
+        return $query->whereNull('reversal_of_id');
+    }
+
     /**
      * Vrai si le mouvement provient d'une source automatique (versement/dépense).
      */
     public function estAutomatique(): bool
     {
         return ! is_null($this->source_id);
+    }
+
+    public function estContrepassation(): bool
+    {
+        return ! is_null($this->reversal_of_id);
     }
 
     public function getTypeLibelleAttribute(): string

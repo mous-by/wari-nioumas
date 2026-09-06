@@ -43,7 +43,7 @@ class PersonnelController extends Controller
 
     public function show(Personnel $personnel): View
     {
-        $personnel->load(['salaireHistoriques.user', 'bulletins', 'user', 'chauffeur']);
+        $personnel->load(['salaireHistoriques.user', 'bulletins', 'user', 'chauffeur', 'casSociaux.type']);
 
         return view('personnel.show', ['personnel' => $personnel]);
     }

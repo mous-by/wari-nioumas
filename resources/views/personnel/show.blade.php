@@ -68,6 +68,31 @@
 
             <div class="card">
                 <div class="card-header card-header-brand">
+                    <h6 class="text-white mb-0"><i class='bx bx-heart me-2'></i>CAS SOCIAUX</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table mb-0">
+                        <thead><tr><th>DATE</th><th>TYPE</th><th>MOTIF</th><th>MONTANT ACCORDÉ</th><th>STATUT</th><th>RÉFÉRENCE</th></tr></thead>
+                        <tbody>
+                            @forelse ($personnel->casSociaux as $cas)
+                                <tr>
+                                    <td>{{ $cas->date_cas->format('d/m/Y') }}</td>
+                                    <td>{{ $cas->type?->libelle }}</td>
+                                    <td>{{ \Illuminate\Support\Str::limit($cas->motif, 40) }}</td>
+                                    <td>{{ $cas->montant_accorde !== null ? $fmt($cas->montant_accorde) : '—' }}</td>
+                                    <td><span class="badge bg-secondary">{{ $cas->statut_libelle }}</span></td>
+                                    <td><a href="{{ route('cas-sociaux.show', $cas) }}">{{ $cas->numero }}</a></td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="6" class="text-center text-muted">Aucun cas social.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header card-header-brand">
                     <h6 class="text-white mb-0"><i class='bx bx-receipt me-2'></i>BULLETINS DE SALAIRE</h6>
                 </div>
                 <div class="card-body">
