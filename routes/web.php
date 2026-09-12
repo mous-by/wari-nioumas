@@ -138,6 +138,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('permission:affectations.creer')->group(function () {
         Route::post('/affectations', [AffectationController::class, 'store'])->name('affectations.store');
+        Route::post('/affectations/permuter', [AffectationController::class, 'permuter'])->name('affectations.permuter');
         Route::post('/affectations/{affectation}/voyages', [AffectationController::class, 'ajouterVoyage'])->name('affectations.voyages.store');
     });
 

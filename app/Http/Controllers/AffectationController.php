@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PermuterAffectationRequest;
 use App\Http\Requests\StoreAffectationRequest;
 use App\Http\Requests\StoreVoyageRequest;
 use App\Http\Requests\UpdateAffectationRequest;
@@ -22,6 +23,7 @@ class AffectationController extends Controller
             'affectations' => Affectation::with(['vehicule', 'chauffeur'])->latest('date_debut')->get(),
             'vehicules' => Vehicule::orderBy('immatriculation')->get(),
             'chauffeurs' => Chauffeur::orderBy('nom')->get(),
+            'affectationsActives' => Affectation::whereNull('date_fin')->with(['chauffeur', 'vehicule'])->get(),
         ]);
     }
 
@@ -56,6 +58,59 @@ class AffectationController extends Controller
         });
 
         return redirect()->route('affectations.index')->with('status', 'Affectation enregistrée avec succès.');
+    }
+
+    /**
+     * Permute les véhicules de deux chauffeurs : chacun garde ou change son
+     * montant/périodicité au choix (saisi dans le formulaire, pré-rempli avec
+     * sa valeur actuelle) — ce n'est pas automatique dans un sens ou l'autre.
+     * Réutilise le même mécanisme que store() (fermeture de l'affectation en
+     * cours + création d'une nouvelle), appliqué aux deux chauffeurs dans une
+     * seule transaction atomique.
+     */
+    public function permuter(PermuterAffectationRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+
+        $affectation1 = Affectation::where('chauffeur_id', $data['chauffeur_1_id'])->whereNull('date_fin')->firstOrFail();
+        $affectation2 = Affectation::where('chauffeur_id', $data['chauffeur_2_id'])->whereNull('date_fin')->firstOrFail();
+
+        DB::transaction(function () use ($data, $affectation1, $affectation2) {
+            $vehicule1 = $affectation1->vehicule_id;
+            $vehicule2 = $affectation2->vehicule_id;
+            $chauffeur1 = $affectation1->chauffeur;
+            $chauffeur2 = $affectation2->chauffeur;
+
+            $affectation1->update([
+                'date_fin' => $data['date_permutation'],
+                'motif_fin' => 'Permutation avec '.($chauffeur2?->nom_complet ?? 'un autre chauffeur'),
+            ]);
+            $affectation2->update([
+                'date_fin' => $data['date_permutation'],
+                'motif_fin' => 'Permutation avec '.($chauffeur1?->nom_complet ?? 'un autre chauffeur'),
+            ]);
+
+            Affectation::create([
+                'vehicule_id' => $vehicule2,
+                'chauffeur_id' => $data['chauffeur_1_id'],
+                'montant_journalier' => $data['montant_1'] ?? null,
+                'periodicite' => $data['periodicite_1'],
+                'date_debut' => $data['date_permutation'],
+                'observations' => $data['observations'] ?? null,
+                'user_id' => auth()->id(),
+            ]);
+            Affectation::create([
+                'vehicule_id' => $vehicule1,
+                'chauffeur_id' => $data['chauffeur_2_id'],
+                'montant_journalier' => $data['montant_2'] ?? null,
+                'periodicite' => $data['periodicite_2'],
+                'date_debut' => $data['date_permutation'],
+                'observations' => $data['observations'] ?? null,
+                'user_id' => auth()->id(),
+            ]);
+        });
+
+        return redirect()->route('affectations.index')->with('status', 'Permutation effectuée avec succès.');
     }
 
     public function update(UpdateAffectationRequest $request, Affectation $affectation): RedirectResponse

@@ -14,7 +14,10 @@
             </nav>
         </div>
         @can('affectations.creer')
-            <div class="ms-auto">
+            <div class="ms-auto d-flex gap-2">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#permuterModal">
+                    <i class='bx bx-transfer'></i> Permuter
+                </button>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAffectationModal">
                     <i class='bx bxs-plus-square'></i> Affectation
                 </button>
@@ -204,6 +207,109 @@
         </div>
     @endcan
 
+    @can('affectations.creer')
+        <div class="modal fade" id="permuterModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form method="POST" action="{{ route('affectations.permuter') }}">
+                        @csrf
+                        <div class="modal-header">
+                            <h5 class="modal-title">Permuter les véhicules de deux chauffeurs</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-info py-2">
+                                Le véhicule de chacun des deux chauffeurs est échangé. Le montant et la périodicité sont
+                                pré-remplis avec ce que chaque chauffeur a actuellement, mais modifiables si le tarif doit changer.
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <label class="form-label">Chauffeur 1 <span class="text-danger">*</span></label>
+                                            <select class="single-select form-select permuter-chauffeur" id="permuter_chauffeur_1" name="chauffeur_1_id" data-cible="1">
+                                                <option value="">-- Choisir --</option>
+                                                @foreach ($affectationsActives as $aff)
+                                                    <option value="{{ $aff->chauffeur_id }}"
+                                                        data-vehicule="{{ $aff->vehicule?->immatriculation }}"
+                                                        data-montant="{{ $aff->montant_journalier }}"
+                                                        data-periodicite="{{ $aff->periodicite }}">
+                                                        {{ $aff->chauffeur?->nom_complet }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <div class="form-text">Véhicule actuel : <strong id="permuter_1_vehicule_actuel">—</strong></div>
+
+                                            <label class="form-label mt-2">Nouveau montant <span class="text-danger" id="permuter_1_montant_req">*</span></label>
+                                            <input type="number" step="1" min="0" class="form-control" id="permuter_montant_1" name="montant_1">
+
+                                            <label class="form-label mt-2">Nouvelle périodicité <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="permuter_periodicite_1" name="periodicite_1">
+                                                @foreach (\App\Models\Affectation::PERIODICITES as $p)
+                                                    <option value="{{ $p }}">{{ ucfirst($p) }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <label class="form-label">Chauffeur 2 <span class="text-danger">*</span></label>
+                                            <select class="single-select form-select permuter-chauffeur" id="permuter_chauffeur_2" name="chauffeur_2_id" data-cible="2">
+                                                <option value="">-- Choisir --</option>
+                                                @foreach ($affectationsActives as $aff)
+                                                    <option value="{{ $aff->chauffeur_id }}"
+                                                        data-vehicule="{{ $aff->vehicule?->immatriculation }}"
+                                                        data-montant="{{ $aff->montant_journalier }}"
+                                                        data-periodicite="{{ $aff->periodicite }}">
+                                                        {{ $aff->chauffeur?->nom_complet }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <div class="form-text">Véhicule actuel : <strong id="permuter_2_vehicule_actuel">—</strong></div>
+
+                                            <label class="form-label mt-2">Nouveau montant <span class="text-danger" id="permuter_2_montant_req">*</span></label>
+                                            <input type="number" step="1" min="0" class="form-control" id="permuter_montant_2" name="montant_2">
+
+                                            <label class="form-label mt-2">Nouvelle périodicité <span class="text-danger">*</span></label>
+                                            <select class="form-select" id="permuter_periodicite_2" name="periodicite_2">
+                                                @foreach (\App\Models\Affectation::PERIODICITES as $p)
+                                                    <option value="{{ $p }}">{{ ucfirst($p) }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Date de la permutation <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="date_permutation" value="{{ date('Y-m-d') }}">
+                                </div>
+                            </div>
+                            <div class="mb-1">
+                                <label class="form-label">Observations</label>
+                                <textarea class="form-control" name="observations" rows="2"></textarea>
+                            </div>
+                            @if ($errors->any())
+                                <div class="alert alert-danger py-2 mb-0 mt-3">
+                                    @foreach ($errors->all() as $error)
+                                        <div>{{ $error }}</div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-primary" id="permuterSubmit">Permuter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endcan
+
     @can('affectations.modifier')
         <div class="modal fade" id="editAffectationModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
@@ -294,7 +400,9 @@
 
     @if ($errors->any())
         <script>
-            window.addEventListener('DOMContentLoaded', () => new bootstrap.Modal(document.getElementById('addAffectationModal')).show());
+            window.addEventListener('DOMContentLoaded', () => new bootstrap.Modal(document.getElementById(
+                {{ $errors->hasAny(['chauffeur_1_id', 'chauffeur_2_id', 'date_permutation']) ? "'permuterModal'" : "'addAffectationModal'" }}
+            )).show());
         </script>
     @endif
 @endsection
@@ -389,6 +497,37 @@
         });
         $('#addAffectationModal').on('hidden.bs.modal', function () {
             $('#addAffectationSubmit').prop('disabled', false);
+        });
+
+        // Pré-remplit le véhicule actuel + montant/périodicité de chaque
+        // chauffeur choisi pour la permutation (modifiables ensuite).
+        $(document).on('change', '.permuter-chauffeur', function () {
+            const option = $(this).find('option:selected');
+            const cible = $(this).data('cible');
+
+            $('#permuter_' + cible + '_vehicule_actuel').text(option.data('vehicule') || '—');
+            $('#permuter_montant_' + cible).val(option.data('montant') ?? '');
+            $('#permuter_periodicite_' + cible).val(option.data('periodicite') || 'journalier').trigger('change');
+        });
+
+        $(document).on('change', '#permuter_periodicite_1, #permuter_periodicite_2', function () {
+            const cible = this.id.slice(-1);
+            const estVoyage = $(this).val() === 'voyage';
+            // Le champ reste toujours modifiable : "voyage" rend juste le
+            // montant facultatif ici (comme dans le formulaire principal),
+            // il ne doit jamais bloquer la saisie.
+            $('#permuter_montant_' + cible).prop('required', !estVoyage);
+            $('#permuter_' + cible + '_montant_req').toggle(!estVoyage);
+        });
+
+        $('#permuterModal form').on('submit', function () {
+            $('#permuterSubmit').prop('disabled', true);
+        });
+        $('#permuterModal').on('hidden.bs.modal', function () {
+            $('#permuterSubmit').prop('disabled', false);
+            this.querySelector('form').reset();
+            $('#permuter_1_vehicule_actuel, #permuter_2_vehicule_actuel').text('—');
+            $('.permuter-chauffeur').val('').trigger('change');
         });
     </script>
 @endpush
