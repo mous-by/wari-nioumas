@@ -40,7 +40,7 @@
                     @endif
                 </td>
                 <td>
-                    <div class="company">WARI NIOUMA <small>Compagnie de Transport</small></div>
+                    <div class="company">WARI NIOUMA</div>
                 </td>
                 <td style="text-align: right; color:#6b7280;">
                     Édité le {{ now()->format('d/m/Y à H:i') }}

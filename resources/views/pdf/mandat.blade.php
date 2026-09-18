@@ -43,7 +43,7 @@
                         <img src="{{ $logo }}" class="logo" alt="logo">
                     @endif
                 </td>
-                <td><div class="company">WARI NIOUMA <small>Compagnie de Transport</small></div></td>
+                <td><div class="company">WARI NIOUMA</div></td>
                 <td style="text-align:right; color:#6b7280;">N° {{ $mandat->numero }}</td>
             </tr>
         </table>
@@ -63,7 +63,7 @@
     </table>
 
     <p class="intro">
-        La Direction de la Compagnie de Transport WARI NIOUMA autorise, par le présent mandat, le paiement
+        La Direction de l'entreprise WARI NIOUMA autorise, par le présent mandat, le paiement
         des salaires ci-dessous pour un montant total de <strong>{{ $fmt($mandat->montant_total) }}</strong>,
         à virer / régler par l'établissement bancaire désigné.
     </p>

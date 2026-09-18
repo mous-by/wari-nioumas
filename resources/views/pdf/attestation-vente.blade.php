@@ -20,7 +20,7 @@
         body { color: #1f2937; font-size: 11.5px; margin: 0; }
 
         /* Bannière d'en-tête — cadre double (noir + rouge), esprit "affiche
-           compagnie de transport" (logo, nom en gros caractères bicolores),
+           entreprise" (logo, titre du document et numéro en gros caractères),
            sans coordonnées inventées. Palette du document : rouge / violet /
            bleu / noir — pas de section entièrement bleue. */
         .banner-frame {
@@ -34,25 +34,14 @@
             border-radius: 9px;
             padding: 8px 16px;
         }
-        .banner table { width: 100%; }
+        table.entete { width: 100%; border-collapse: collapse; }
+        table.entete td { vertical-align: middle; }
         .logo { width: 48px; height: 48px; border-radius: 50%; border: 2px solid {{ $noir }}; }
-        .company { font-size: 21px; font-weight: bold; letter-spacing: .3px; line-height: 1.1; }
-        .company .wari { color: {{ $bleu }}; }
-        .company .niouma { color: {{ $rouge }}; }
-        .company small { display: block; font-size: 10px; color: #6b7280; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
-        .numero-pill {
-            display: inline-block;
-            white-space: nowrap;
-            background: {{ $violet }};
-            color: #fff;
-            border-radius: 20px;
-            padding: 6px 16px;
-            font-size: 11px;
-            font-weight: bold;
-        }
+        .banner-title { text-align: center; }
+        .banner-title .titre { font-size: 27px; font-weight: bold; letter-spacing: .6px; line-height: 1.1; text-transform: uppercase; color: {{ $bleu }}; }
+        .banner-title .numero { margin-top: 4px; font-size: 20px; font-weight: bold; letter-spacing: 1px; color: {{ $violet }}; }
 
-        /* Titre du document */
-        .doc-title { text-align: center; font-size: 20px; font-weight: bold; color: {{ $noir }}; margin: 2px 0 2px; text-transform: uppercase; letter-spacing: .5px; }
+        /* Sous-titre du document (le titre est dans la bannière) */
         .doc-subtitle-wrap { text-align: center; margin-bottom: 8px; }
         .doc-subtitle {
             display: inline-block;
@@ -127,31 +116,31 @@
 <body>
     <div class="banner-frame">
         <div class="banner-inner">
-            <table>
+            <table class="entete">
                 <tr>
                     <td style="width: 74px;">
                         @if (file_exists($logo))
                             <img src="{{ $logo }}" class="logo" alt="logo">
                         @endif
                     </td>
-                    <td>
-                        <div class="company"><span class="wari">WARI</span> <span class="niouma">NIOUMA</span></div>
-                        <small>Compagnie de Transport</small>
+                    <td class="banner-title">
+                        <div class="titre">Attestation de vente</div>
+                        <div class="numero">N° {{ $attestation->numero }}</div>
                     </td>
-                    <td style="text-align:right; width: 175px;"><span class="numero-pill">N° {{ $attestation->numero }}</span></td>
+                    {{-- Cellule vide de même largeur que le logo : garde le titre centré. --}}
+                    <td style="width: 74px;"></td>
                 </tr>
             </table>
         </div>
     </div>
 
-    <div class="doc-title">Attestation de vente</div>
     <div class="doc-subtitle-wrap"><span class="doc-subtitle">Faisant fonction de facture</span></div>
 
     <p class="intro">
         Je soussigné(e), <strong>{{ $attestation->vendeur_representant }}</strong>
         @if ($attestation->vendeur_nina) <span class="nina">(NINA {{ $attestation->vendeur_nina }})</span> @endif,
-        agissant au nom et pour le compte de
-        <strong>WARI NIOUMA — Compagnie de Transport</strong>, atteste avoir vendu le
+        agissant au nom et pour le compte de l'entreprise
+        <strong>WARI NIOUMA</strong>, atteste avoir vendu le
         <strong>{{ $attestation->date_vente->format('d/m/Y') }}</strong>, à <strong>{{ $attestation->acheteur_nom }}</strong>
         @if ($attestation->acheteur_nina) <span class="nina">(NINA {{ $attestation->acheteur_nina }})</span> @endif
         @if ($attestation->acheteur_adresse)

@@ -15,7 +15,6 @@
                     </td>
                     <td>
                         <div class="brand">WARI <span class="niouma">NIOUMA</span>
-                            <small>Compagnie de Transport</small>
                         </div>
                     </td>
                 </tr>

@@ -104,7 +104,7 @@
             <h6 class="text-white mb-0"><i class='bx bx-book-open me-2'></i>GUIDE D'UTILISATION — WARI NIOUMA</h6>
         </div>
         <div class="card-body">
-            <p class="mb-2">WARI NIOUMA centralise toute la gestion de la compagnie : le parc (chauffeurs et véhicules), l'exploitation (affectations, recettes, absences), les charges (dépenses, accidents, incidents), la trésorerie (caisse, finances) et les ressources humaines (personnel, bulletins, mandats de paiement).</p>
+            <p class="mb-2">WARI NIOUMA centralise toute la gestion de l'entreprise : le parc (chauffeurs et véhicules), l'exploitation (affectations, recettes, absences), les charges (dépenses, accidents, incidents), la trésorerie (caisse, finances) et les ressources humaines (personnel, bulletins, mandats de paiement).</p>
             <p class="mb-3 text-muted">La sécurité repose sur les <strong>rôles</strong> : chaque personne ne voit et n'utilise que ce que son rôle autorise. Les actions les plus sensibles passent par la <strong>validation du Directeur général</strong>.</p>
             <div class="d-flex flex-wrap gap-2">
                 @foreach (['Directeur général','Gestionnaire','Comptable','Caissier','Responsable du parc'] as $role)

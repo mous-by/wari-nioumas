@@ -15,7 +15,6 @@
                     </td>
                     <td>
                         <div class="brand">WARI <span class="niouma">NIOUMA</span>
-                            <small>Compagnie de Transport</small>
                         </div>
                     </td>
                 </tr>
@@ -51,5 +50,5 @@
         </table>
     </div>
 
-    <div class="footer"><div class="accent"></div><span>Wari Niouma — Compagnie de Transport</span></div>
+    <div class="footer"><div class="accent"></div><span>Wari Niouma</span></div>
 </div>

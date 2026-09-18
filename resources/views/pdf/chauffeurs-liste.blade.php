@@ -38,7 +38,7 @@
                         <img src="{{ $logo }}" class="logo" alt="logo">
                     @endif
                 </td>
-                <td><div class="company">WARI NIOUMA <small>Compagnie de Transport</small></div></td>
+                <td><div class="company">WARI NIOUMA</div></td>
                 <td style="text-align:right;">
                     <div class="doc-title">Liste des chauffeurs
                         <small>{{ $chauffeurs->count() }} chauffeur(s) — édité le {{ now()->format('d/m/Y à H:i') }}</small>
@@ -73,6 +73,6 @@
         @endforeach
     </table>
 
-    <div class="footer">Wari Niouma — Compagnie de Transport</div>
+    <div class="footer">Wari Niouma</div>
 </body>
 </html>

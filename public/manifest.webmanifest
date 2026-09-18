@@ -1,7 +1,7 @@
 {
-    "name": "WARI NIOUMA — Gestion Transport",
+    "name": "WARI NIOUMA — Gestion",
     "short_name": "WARI NIOUMA",
-    "description": "Application de gestion de la Compagnie de Transport WARI NIOUMA.",
+    "description": "Application de gestion de l'entreprise WARI NIOUMA.",
     "start_url": "/",
     "scope": "/",
     "display": "standalone",

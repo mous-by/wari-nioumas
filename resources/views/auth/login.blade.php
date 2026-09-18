@@ -372,7 +372,7 @@
                     <h1 class="brand-title">
                         <span class="brand-title-wari">WARI</span> <span class="brand-title-niouma">NIOUMA</span>
                     </h1>
-                    <p class="brand-subtitle">GESTION DE LA COMPAGNIE DE TRANSPORT</p>
+                    <p class="brand-subtitle">GESTION DE L'ENTREPRISE</p>
                 </div>
 
                 @if ($errors->any())

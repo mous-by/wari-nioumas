@@ -35,7 +35,7 @@
                 <td style="width: 74px;">
                     @if (file_exists($logo))<img src="{{ $logo }}" class="logo" alt="logo">@endif
                 </td>
-                <td><div class="company">WARI NIOUMA <small>Compagnie de Transport</small></div></td>
+                <td><div class="company">WARI NIOUMA</div></td>
                 <td style="text-align:right; color:#6b7280;">Édité le {{ now()->format('d/m/Y') }}</td>
             </tr>
         </table>
