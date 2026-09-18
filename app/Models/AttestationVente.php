@@ -36,6 +36,7 @@ class AttestationVente extends Model
     protected $attributes = [
         'statut' => 'brouillon',
         'montant_paye' => 0,
+        'avec_temoins' => false,
     ];
 
     protected $fillable = [
@@ -59,6 +60,9 @@ class AttestationVente extends Model
         'acheteur_nom',
         'acheteur_nina',
         'acheteur_adresse',
+        'avec_temoins',
+        'temoin_1_nom',
+        'temoin_2_nom',
         'montant_total',
         'montant_paye',
         'mode_paiement',
@@ -73,6 +77,7 @@ class AttestationVente extends Model
     {
         return [
             'date_vente' => 'date',
+            'avec_temoins' => 'boolean',
             'montant_total' => 'decimal:2',
             'montant_paye' => 'decimal:2',
         ];

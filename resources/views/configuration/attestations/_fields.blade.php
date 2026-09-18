@@ -123,17 +123,47 @@
 
 <div class="card mb-3">
     <div class="card-header card-header-brand">
+        <h6 class="text-white mb-0">TÉMOINS (OPTIONNEL)</h6>
+    </div>
+    <div class="card-body">
+        {{-- Le champ caché envoie 0 quand la case est décochée : sans lui, une
+             modification qui décoche la case n'enverrait rien et l'ancienne
+             valeur resterait. --}}
+        <input type="hidden" name="avec_temoins" value="0">
+        <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch" id="avec_temoins" name="avec_temoins" value="1" @checked($val('avec_temoins', false))>
+            <label class="form-check-label" for="avec_temoins">Ajouter des témoins à l'attestation</label>
+        </div>
+
+        <div id="champs_temoins" class="row" style="display:none">
+            <div class="col-md-6 mb-3">
+                <label for="temoin_1_nom" class="form-label">Nom du témoin 1</label>
+                <input type="text" class="form-control" id="temoin_1_nom" name="temoin_1_nom" value="{{ $val('temoin_1_nom') }}">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="temoin_2_nom" class="form-label">Nom du témoin 2</label>
+                <input type="text" class="form-control" id="temoin_2_nom" name="temoin_2_nom" value="{{ $val('temoin_2_nom') }}">
+            </div>
+            <div class="col-12">
+                <small class="text-muted">Les noms sont facultatifs : si un nom est laissé vide, son cadre de signature s'imprime quand même, à compléter à la main.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-header card-header-brand">
         <h6 class="text-white mb-0">MONTANT &amp; PAIEMENT</h6>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="montant_total" class="form-label">Montant total <span class="text-danger">*</span></label>
-                <input type="number" step="1" min="0" class="form-control" id="montant_total" name="montant_total" value="{{ $val('montant_total', 0) }}">
+                <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" id="montant_total" name="montant_total" value="{{ $val('montant_total', 0) }}">
             </div>
             <div class="col-md-4 mb-3">
                 <label for="montant_paye" class="form-label">Montant déjà perçu</label>
-                <input type="number" step="1" min="0" class="form-control" id="montant_paye" name="montant_paye" value="{{ $val('montant_paye', 0) }}">
+                <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" id="montant_paye" name="montant_paye" value="{{ $val('montant_paye', 0) }}">
                 <small class="text-muted">Laisser à 0 si aucune avance perçue.</small>
             </div>
             <div class="col-md-4 mb-3">
@@ -188,6 +218,12 @@
         }
         $('#type_bien').on('change', toggleChampsBien);
         toggleChampsBien();
+
+        function toggleChampsTemoins() {
+            $('#champs_temoins').toggle($('#avec_temoins').is(':checked'));
+        }
+        $('#avec_temoins').on('change', toggleChampsTemoins);
+        toggleChampsTemoins();
 
         // Pré-remplit les champs véhicule depuis la fiche sélectionnée
         // (champs modifiables ensuite, rien n'est verrouillé).

@@ -93,6 +93,16 @@
                 @endif
             </div>
 
+            @if ($attestation->avec_temoins)
+                <hr>
+
+                <h6 class="text-muted text-uppercase small mb-2">Témoins</h6>
+                <div class="row mb-3">
+                    <div class="col-md-6"><small class="text-muted">Témoin 1</small><div>{{ $attestation->temoin_1_nom ?: '— (à compléter à la main)' }}</div></div>
+                    <div class="col-md-6"><small class="text-muted">Témoin 2</small><div>{{ $attestation->temoin_2_nom ?: '— (à compléter à la main)' }}</div></div>
+                </div>
+            @endif
+
             <hr>
 
             <h6 class="text-muted text-uppercase small mb-2">Montant &amp; paiement</h6>

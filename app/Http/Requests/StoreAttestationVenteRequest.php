@@ -41,6 +41,10 @@ class StoreAttestationVenteRequest extends FormRequest
             'acheteur_nina' => ['nullable', 'string', 'max:50'],
             'acheteur_adresse' => ['nullable', 'string'],
 
+            'avec_temoins' => ['nullable', 'boolean'],
+            'temoin_1_nom' => ['nullable', 'string', 'max:255'],
+            'temoin_2_nom' => ['nullable', 'string', 'max:255'],
+
             'montant_total' => ['required', 'numeric', 'min:0'],
             'montant_paye' => ['nullable', 'numeric', 'min:0'],
             'mode_paiement' => [Rule::requiredIf(fn () => (float) $this->input('montant_paye', 0) > 0), 'nullable', Rule::in(array_keys(AttestationVente::MODES_PAIEMENT))],

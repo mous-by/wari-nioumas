@@ -13,8 +13,11 @@
 <head>
     <meta charset="utf-8">
     <style>
+        /* Tout le document doit tenir sur UNE seule feuille A4, témoins
+           compris : marges de page réduites et espacements resserrés. */
+        @page { margin: 10mm 13mm; }
         * { font-family: DejaVu Sans, sans-serif; box-sizing: border-box; }
-        body { color: #1f2937; font-size: 12px; margin: 0; }
+        body { color: #1f2937; font-size: 11.5px; margin: 0; }
 
         /* Bannière d'en-tête — cadre double (noir + rouge), esprit "affiche
            compagnie de transport" (logo, nom en gros caractères bicolores),
@@ -23,17 +26,17 @@
         .banner-frame {
             border: 3px solid {{ $noir }};
             border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 14px;
+            padding: 3px;
+            margin-bottom: 8px;
         }
         .banner-inner {
             border: 1px solid {{ $rouge }};
             border-radius: 9px;
-            padding: 14px 20px;
+            padding: 8px 16px;
         }
         .banner table { width: 100%; }
-        .logo { width: 62px; height: 62px; border-radius: 50%; border: 2px solid {{ $noir }}; }
-        .company { font-size: 24px; font-weight: bold; letter-spacing: .3px; line-height: 1.1; }
+        .logo { width: 48px; height: 48px; border-radius: 50%; border: 2px solid {{ $noir }}; }
+        .company { font-size: 21px; font-weight: bold; letter-spacing: .3px; line-height: 1.1; }
         .company .wari { color: {{ $bleu }}; }
         .company .niouma { color: {{ $rouge }}; }
         .company small { display: block; font-size: 10px; color: #6b7280; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
@@ -49,8 +52,8 @@
         }
 
         /* Titre du document */
-        .doc-title { text-align: center; font-size: 20px; font-weight: bold; color: {{ $noir }}; margin: 4px 0 2px; text-transform: uppercase; letter-spacing: .5px; }
-        .doc-subtitle-wrap { text-align: center; margin-bottom: 18px; }
+        .doc-title { text-align: center; font-size: 20px; font-weight: bold; color: {{ $noir }}; margin: 2px 0 2px; text-transform: uppercase; letter-spacing: .5px; }
+        .doc-subtitle-wrap { text-align: center; margin-bottom: 8px; }
         .doc-subtitle {
             display: inline-block;
             font-size: 10px; font-weight: bold; color: {{ $violet }};
@@ -60,23 +63,23 @@
         }
 
         .intro {
-            line-height: 1.7;
+            line-height: 1.5;
             background: #f8fafc;
             border-left: 4px solid {{ $bleu }};
             border-radius: 0 8px 8px 0;
-            padding: 12px 16px;
-            margin-bottom: 16px;
+            padding: 8px 14px;
+            margin-bottom: 9px;
         }
         .intro .nina { color: #6b7280; font-size: 10px; }
 
         /* Sections — une seule couleur d'en-tête pour toutes (uniforme) ;
            rouge et violet restent des accents ponctuels (pastille, alerte
            montant dû), pas une couleur différente par section. */
-        .section { margin-bottom: 16px; }
+        .section { margin-bottom: 9px; }
         .section-title {
             font-size: 11px; font-weight: bold; color: #fff;
             text-transform: uppercase; letter-spacing: .5px;
-            padding: 6px 12px;
+            padding: 4px 12px;
             border-radius: 6px 6px 0 0;
             background: {{ $noir }};
         }
@@ -84,34 +87,40 @@
             border: 1px solid #e2e8f0;
             border-top: none;
             border-radius: 0 0 8px 8px;
-            padding: 12px 14px;
+            padding: 7px 10px;
         }
         /* Tableau d'infos à bordures visibles (label | valeur), comme sur les
            Mandats de paiement — pas de disposition "carte" sans bordure. */
         table.info-table { width: 100%; border-collapse: collapse; }
-        table.info-table td { padding: 6px 10px; border: 1px solid #d1d5db; }
+        table.info-table td { padding: 4px 8px; border: 1px solid #d1d5db; }
         table.info-table td.lbl { background: #f3f4f6; font-weight: bold; width: 22%; color: #374151; }
 
         /* Montants */
-        table.montants { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-        table.montants td { padding: 8px 12px; border: 1px solid #d1d5db; }
+        table.montants { width: 100%; border-collapse: collapse; margin-bottom: 7px; }
+        table.montants td { padding: 5px 10px; border: 1px solid #d1d5db; }
         table.montants td.lbl2 { color: #4b5563; background: #f3f4f6; font-weight: bold; }
         table.montants td.num { text-align: right; font-weight: bold; }
         .reste-box {
             border-radius: 8px;
-            padding: 12px 16px;
+            padding: 7px 14px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 12.5px;
         }
         .reste-box.solde { background: #eef2ff; border: 1px solid #a5b4fc; color: {{ $bleu }}; }
         .reste-box.du { background: #fef2f2; border: 1px solid #fca5a5; color: {{ $rouge }}; }
         .reste-box .amount { float: right; }
 
         /* Signatures */
-        .signatures { width: 100%; margin-top: 40px; }
+        .signatures { width: 100%; margin-top: 16px; }
         .signatures td { width: 50%; vertical-align: top; padding: 0 12px; }
-        .sig-box { border: 1px dashed #9ca3af; border-radius: 8px; height: 70px; }
-        .sig-caption { margin-top: 6px; font-size: 10px; color: #6b7280; text-align: center; }
+        .sig-box { border: 1px dashed #9ca3af; border-radius: 8px; height: 52px; }
+        .sig-caption { margin-top: 4px; font-size: 10px; color: #6b7280; text-align: center; }
+
+        /* Témoins (bloc optionnel) — même gabarit que les signatures
+           principales, en plus compact et sous un sous-titre. */
+        .temoins-title { margin-top: 12px; font-size: 10px; font-weight: bold; color: {{ $noir }}; text-transform: uppercase; letter-spacing: .5px; text-align: center; }
+        .signatures.temoins { margin-top: 6px; }
+        .signatures.temoins .sig-box { height: 46px; }
 
     </style>
 </head>
@@ -231,7 +240,7 @@
         <tr>
             <td>
                 <div class="sig-box"></div>
-                <div class="sig-caption">Signature de l'acheteur</div>
+                <div class="sig-caption">Signature de l'acheteur — {{ $attestation->acheteur_nom }}</div>
             </td>
             <td>
                 <div class="sig-box"></div>
@@ -239,5 +248,21 @@
             </td>
         </tr>
     </table>
+
+    @if ($attestation->avec_temoins)
+        <div class="temoins-title">Témoins</div>
+        <table class="signatures temoins">
+            <tr>
+                <td>
+                    <div class="sig-box"></div>
+                    <div class="sig-caption">Signature du témoin 1{{ $attestation->temoin_1_nom ? ' — '.$attestation->temoin_1_nom : '' }}</div>
+                </td>
+                <td>
+                    <div class="sig-box"></div>
+                    <div class="sig-caption">Signature du témoin 2{{ $attestation->temoin_2_nom ? ' — '.$attestation->temoin_2_nom : '' }}</div>
+                </td>
+            </tr>
+        </table>
+    @endif
 </body>
 </html>
