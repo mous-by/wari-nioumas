@@ -170,7 +170,7 @@
             const d = $(this).data();
             $('#editPersonnelForm').attr('action', d.url);
             ['nom','prenom','poste','telephone','salaire_base','date_embauche','banque','numero_compte','statut','user_id','chauffeur_id','observations']
-                .forEach(f => $('#edit_' + f).val(d[f] ?? ''));
+                .forEach(f => $('#edit_' + f).val(f === 'salaire_base' ? formaterMontant(d[f]) : (d[f] ?? '')));
         });
 
         $(document).on('submit', '.confirm-form', function (e) {

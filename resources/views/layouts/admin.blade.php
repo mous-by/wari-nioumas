@@ -23,6 +23,7 @@
     </div>
 
     @include('partials.foot')
+    @include('partials.montants')
     @stack('scripts')
     @include('partials.pwa')
 

@@ -23,7 +23,7 @@
 <div class="row">
     <div class="col-md-6 mb-3">
         <label class="form-label">Salaire de base (FCFA) <span class="text-danger">*</span></label>
-        <input type="number" step="1" min="0" class="form-control" name="salaire_base" id="{{ $prefix }}salaire_base" value="{{ $isAdd ? old('salaire_base', 0) : '' }}">
+        <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="salaire_base" id="{{ $prefix }}salaire_base" value="{{ $isAdd ? old('salaire_base', 0) : '' }}">
     </div>
     <div class="col-md-6 mb-3">
         <label class="form-label">Date d'embauche</label>

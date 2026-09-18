@@ -206,7 +206,7 @@
             $('#edit_type').val(d.type);
             $('#edit_gravite').val(d.gravite);
             $('#edit_description').val(d.description);
-            $('#edit_cout').val(d.cout);
+            $('#edit_cout').val(formaterMontant(d.cout));
             $('#edit_decision').val(d.decision);
             $('#edit_statut').val(d.statut);
         });

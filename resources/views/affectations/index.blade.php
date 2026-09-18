@@ -175,7 +175,7 @@
                             <div class="row" id="montant_journalier_row">
                                 <div class="col-md-6 mb-3">
                                     <label for="montant_journalier" class="form-label">Montant <span class="text-danger">*</span></label>
-                                    <input type="number" step="1" min="0" class="form-control" id="montant_journalier" name="montant_journalier" value="{{ old('montant_journalier', 0) }}" placeholder="FCFA par période">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" id="montant_journalier" name="montant_journalier" value="{{ old('montant_journalier', 0) }}" placeholder="FCFA par période">
                                     <small class="text-muted">Montant dû par période choisie (jour, mois, trimestre, semestre).</small>
                                 </div>
                             </div>
@@ -241,7 +241,7 @@
                                             <div class="form-text">Véhicule actuel : <strong id="permuter_1_vehicule_actuel">—</strong></div>
 
                                             <label class="form-label mt-2">Nouveau montant <span class="text-danger" id="permuter_1_montant_req">*</span></label>
-                                            <input type="number" step="1" min="0" class="form-control" id="permuter_montant_1" name="montant_1">
+                                            <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" id="permuter_montant_1" name="montant_1">
 
                                             <label class="form-label mt-2">Nouvelle périodicité <span class="text-danger">*</span></label>
                                             <select class="form-select" id="permuter_periodicite_1" name="periodicite_1">
@@ -270,7 +270,7 @@
                                             <div class="form-text">Véhicule actuel : <strong id="permuter_2_vehicule_actuel">—</strong></div>
 
                                             <label class="form-label mt-2">Nouveau montant <span class="text-danger" id="permuter_2_montant_req">*</span></label>
-                                            <input type="number" step="1" min="0" class="form-control" id="permuter_montant_2" name="montant_2">
+                                            <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" id="permuter_montant_2" name="montant_2">
 
                                             <label class="form-label mt-2">Nouvelle périodicité <span class="text-danger">*</span></label>
                                             <select class="form-select" id="permuter_periodicite_2" name="periodicite_2">
@@ -343,7 +343,7 @@
                             <div class="row" id="edit_montant_journalier_row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Montant <span class="text-danger">*</span></label>
-                                    <input type="number" step="1" min="0" class="form-control" name="montant_journalier" id="edit_montant_journalier">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="montant_journalier" id="edit_montant_journalier">
                                     <small class="text-muted">Montant dû par période choisie.</small>
                                 </div>
                             </div>
@@ -380,7 +380,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Montant encaissé pour ce voyage <span class="text-danger">*</span></label>
-                                <input type="number" step="1" min="1" class="form-control" name="montant" id="ajouter_voyage_montant">
+                                <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="montant" id="ajouter_voyage_montant">
                                 <small class="text-muted">Ce que le chauffeur a rapporté pour ce voyage. S'ajoute immédiatement au total cumulé de ce chauffeur.</small>
                             </div>
                             <div class="mb-1">
@@ -418,7 +418,7 @@
             $('#editAffectationForm').attr('action', data.url);
             $('#edit_affectation_libelle').text(data.vehicule + ' — ' + data.chauffeur);
             $('#edit_date_debut').val(data.date_debut);
-            $('#edit_montant_journalier').val(data.montant_journalier);
+            $('#edit_montant_journalier').val(formaterMontant(data.montant_journalier));
             $('#edit_periodicite').val(data.periodicite || 'journalier').trigger('change');
             $('#edit_observations').val(data.observations);
         });
@@ -506,7 +506,7 @@
             const cible = $(this).data('cible');
 
             $('#permuter_' + cible + '_vehicule_actuel').text(option.data('vehicule') || '—');
-            $('#permuter_montant_' + cible).val(option.data('montant') ?? '');
+            $('#permuter_montant_' + cible).val(formaterMontant(option.data('montant')));
             $('#permuter_periodicite_' + cible).val(option.data('periodicite') || 'journalier').trigger('change');
         });
 

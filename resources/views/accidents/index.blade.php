@@ -208,7 +208,7 @@
             $('#edit_gravite').val(d.gravite);
             $('#edit_responsabilite').val(d.responsabilite);
             $('#edit_description').val(d.description);
-            $('#edit_cout_reparation').val(d.cout_reparation);
+            $('#edit_cout_reparation').val(formaterMontant(d.cout_reparation));
             $('#edit_decision').val(d.decision);
             $('#edit_statut').val(d.statut);
         });

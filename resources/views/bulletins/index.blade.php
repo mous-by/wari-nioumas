@@ -143,11 +143,11 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Primes (FCFA)</label>
-                                    <input type="number" step="1" min="0" class="form-control" name="primes" value="0">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="primes" value="0">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Retenues (FCFA)</label>
-                                    <input type="number" step="1" min="0" class="form-control" name="retenues" value="0">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="retenues" value="0">
                                 </div>
                             </div>
                             <div class="mb-1">
@@ -183,11 +183,11 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Primes (FCFA)</label>
-                                    <input type="number" step="1" min="0" class="form-control" name="primes" id="edit_primes">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="primes" id="edit_primes">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Retenues (FCFA)</label>
-                                    <input type="number" step="1" min="0" class="form-control" name="retenues" id="edit_retenues">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="retenues" id="edit_retenues">
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -230,8 +230,8 @@
             const d = $(this).data();
             $('#editBulletinForm').attr('action', d.url);
             $('#edit_bulletin_employe').text(d.employe);
-            $('#edit_primes').val(d.primes);
-            $('#edit_retenues').val(d.retenues);
+            $('#edit_primes').val(formaterMontant(d.primes));
+            $('#edit_retenues').val(formaterMontant(d.retenues));
             $('#edit_statut').val(d.statut);
             $('#edit_bulletin_observations').val(d.observations);
         });

@@ -267,7 +267,7 @@
                             <p>Montant demandé : <strong>{{ $fmt($casSocial->montant_demande) }}</strong></p>
                             <div class="mb-1">
                                 <label class="form-label">Montant accordé (FCFA) <span class="text-danger">*</span></label>
-                                <input type="number" step="1" min="0" class="form-control" name="montant_accorde" value="{{ $casSocial->montant_demande }}" required>
+                                <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="montant_accorde" value="{{ $casSocial->montant_demande }}" required>
                                 <small class="text-muted">Ce montant sera figé et servira exactement au paiement.</small>
                             </div>
                         </div>

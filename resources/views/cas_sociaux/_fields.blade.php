@@ -78,7 +78,7 @@
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="montant_demande" class="form-label">Montant demandé (FCFA) <span class="text-danger">*</span></label>
-                <input type="number" step="1" min="0" class="form-control" id="montant_demande" name="montant_demande" value="{{ $val('montant_demande', 0) }}">
+                <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" id="montant_demande" name="montant_demande" value="{{ $val('montant_demande', 0) }}">
             </div>
             <div class="col-md-6 mb-3">
                 <label for="mode_paiement" class="form-label">Mode de paiement souhaité</label>

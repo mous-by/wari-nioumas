@@ -163,7 +163,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Montant <span class="text-danger">*</span></label>
-                                    <input type="number" step="1" min="1" class="form-control" name="montant" value="{{ old('montant') }}">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="montant" value="{{ old('montant') }}">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Date <span class="text-danger">*</span></label>
@@ -226,7 +226,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Montant <span class="text-danger">*</span></label>
-                                    <input type="number" step="1" min="1" class="form-control" name="montant" id="edit_montant">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="montant" id="edit_montant">
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Date <span class="text-danger">*</span></label>
@@ -266,7 +266,7 @@
             $('#editDepenseForm').attr('action', data.url);
             $('#edit_categorie').val(data.categorie);
             $('#edit_vehicule_id').val(data.vehicule_id || '');
-            $('#edit_montant').val(data.montant);
+            $('#edit_montant').val(formaterMontant(data.montant));
             $('#edit_date_depense').val(data.date_depense);
             $('#edit_description').val(data.description);
         });

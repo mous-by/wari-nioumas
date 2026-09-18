@@ -143,7 +143,7 @@
                         @csrf
                         <div class="col-md-4">
                             <label class="form-label">Solde d'ouverture (FCFA) <span class="text-danger">*</span></label>
-                            <input type="number" step="1" min="0" class="form-control" name="solde_ouverture" value="{{ old('solde_ouverture', 0) }}">
+                            <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="solde_ouverture" value="{{ old('solde_ouverture', 0) }}">
                         </div>
                         <div class="col-md-5">
                             <label class="form-label">Observations</label>
@@ -222,7 +222,7 @@
                                 </div>
                                 <div class="mb-1">
                                     <label class="form-label">Montant (FCFA) <span class="text-danger">*</span></label>
-                                    <input type="number" step="1" min="1" class="form-control" name="montant">
+                                    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="montant">
                                 </div>
                             </div>
                             <div class="modal-footer">

@@ -53,7 +53,7 @@
     </div>
     <div class="col-md-6 mb-3">
         <label class="form-label">Coût (FCFA)</label>
-        <input type="number" step="1" min="0" class="form-control" name="cout" id="{{ $prefix }}cout" value="{{ $isAdd ? old('cout', 0) : '' }}">
+        <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="cout" id="{{ $prefix }}cout" value="{{ $isAdd ? old('cout', 0) : '' }}">
     </div>
 </div>
 <div class="mb-3">

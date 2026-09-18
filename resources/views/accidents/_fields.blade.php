@@ -58,7 +58,7 @@
 </div>
 <div class="mb-3">
     <label class="form-label">Coût de réparation (FCFA)</label>
-    <input type="number" step="1" min="0" class="form-control" name="cout_reparation" id="{{ $prefix }}cout_reparation" value="{{ $isAdd ? old('cout_reparation', 0) : '' }}">
+    <input type="text" inputmode="numeric" autocomplete="off" class="form-control champ-montant" name="cout_reparation" id="{{ $prefix }}cout_reparation" value="{{ $isAdd ? old('cout_reparation', 0) : '' }}">
 </div>
 <div class="mb-3">
     <label class="form-label">Description <span class="text-danger">*</span></label>
