@@ -55,6 +55,7 @@
     <table class="data">
         <tr><th>Détail des charges</th><th style="text-align:right;">Montant</th></tr>
         <tr><td>Dépenses du parc</td><td class="num">{{ $fmt($depenses) }}</td></tr>
+        <tr><td>Salaires (bulletins validés ou payés)</td><td class="num">{{ $fmt($salaires) }}</td></tr>
         <tr><td>Coût des accidents</td><td class="num">{{ $fmt($coutAccidents) }}</td></tr>
         <tr><td>Coût des incidents</td><td class="num">{{ $fmt($coutIncidents) }}</td></tr>
         <tr class="total"><td>Total charges</td><td class="num">{{ $fmt($charges) }}</td></tr>
@@ -64,6 +65,7 @@
         <tr>
             <th>Mois</th>
             <th style="text-align:right;">Recettes</th>
+            <th style="text-align:right;">Salaires</th>
             <th style="text-align:right;">Charges</th>
             <th style="text-align:right;">Résultat</th>
         </tr>
@@ -71,6 +73,7 @@
             <tr>
                 <td>{{ ucfirst($ligne['mois']->translatedFormat('F Y')) }}</td>
                 <td class="num">{{ $fmt($ligne['recettes']) }}</td>
+                <td class="num">{{ $fmt($ligne['salaires']) }}</td>
                 <td class="num">{{ $fmt($ligne['charges']) }}</td>
                 <td class="num">{{ $fmt($ligne['resultat']) }}</td>
             </tr>
@@ -78,6 +81,7 @@
         <tr class="total">
             <td>TOTAL</td>
             <td class="num">{{ $fmt($recettes) }}</td>
+            <td class="num">{{ $fmt($salaires) }}</td>
             <td class="num">{{ $fmt($charges) }}</td>
             <td class="num">{{ $fmt($resultat) }}</td>
         </tr>
