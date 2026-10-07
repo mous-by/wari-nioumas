@@ -57,7 +57,7 @@
                     <h6 class="text-white mb-0">TYPES EXISTANTS</h6>
                 </div>
                 <div class="card-body">
-                    <table class="table mb-0">
+                    <table class="table mb-0" id="types-cas-sociaux-table">
                         <thead><tr><th>LIBELLÉ</th><th>DESCRIPTION</th><th>STATUT</th><th width="18%">ACTION</th></tr></thead>
                         <tbody>
                             @forelse ($types as $type)
@@ -124,6 +124,8 @@
 
 @push('scripts')
     <script>
+        $('#types-cas-sociaux-table').DataTable({ order: [[0, 'asc']] });
+
         $(document).on('click', '.edit-type-button', function () {
             const d = $(this).data();
             $('#editTypeForm').attr('action', d.url);

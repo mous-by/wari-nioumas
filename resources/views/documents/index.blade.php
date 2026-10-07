@@ -138,14 +138,28 @@
 
 @push('scripts')
     <script>
-        $('[data-filtre]').on('click', function () {
-            $('[data-filtre]').removeClass('active');
-            $(this).addClass('active');
+        (function () {
+            // Tri alphabétique par défaut sur « Propriétaire » (colonne 0) ;
+            // la recherche rapide vient automatiquement avec DataTables.
+            const table = $('#documents-table').DataTable({ order: [[0, 'asc']], pageLength: 25 });
 
-            const filtre = $(this).data('filtre');
-            $('#documents-table tbody tr[data-statut]').each(function () {
-                $(this).toggle(filtre === 'tous' || $(this).data('statut') === filtre);
+            // Filtre par statut (boutons Expirés/Proches/...) : un filtre
+            // personnalisé DataTables, pour rester compatible avec son tri,
+            // sa recherche et sa pagination (un simple .toggle() sur les
+            // lignes ne fonctionnerait plus correctement une fois paginé).
+            let filtreActif = 'tous';
+            $.fn.dataTable.ext.search.push(function (settings, data, index, rowData, counter) {
+                if (settings.nTable.id !== 'documents-table' || filtreActif === 'tous') return true;
+
+                return table.row(index).node().dataset.statut === filtreActif;
             });
-        });
+
+            $('[data-filtre]').on('click', function () {
+                $('[data-filtre]').removeClass('active');
+                $(this).addClass('active');
+                filtreActif = $(this).data('filtre');
+                table.draw();
+            });
+        })();
     </script>
 @endpush

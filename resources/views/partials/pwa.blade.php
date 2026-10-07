@@ -25,9 +25,17 @@
         // 2) Capture de l'invite d'installation, puis affichage du modal une seule fois
         let deferredPrompt = null;
         const dejaTraite = () => localStorage.getItem('wn-pwa-installed') === '1';
+        // Chrome peut redéclencher l'évènement à chaque navigation tant que
+        // l'utilisateur n'a pas explicitement répondu (ni "Installer", ni
+        // "Plus tard") : sans ce repère, l'invite réapparaîtrait à chaque
+        // page et bloquerait le reste de l'écran (fond figé en arrière-plan)
+        // jusqu'à ce qu'elle soit refermée. On ne la montre donc qu'une fois
+        // par onglet/session ; elle pourra réapparaître à la prochaine visite.
+        const dejaMontreeCetteSession = () => sessionStorage.getItem('wn-pwa-shown') === '1';
 
         function afficherPwaModal() {
-            if (dejaTraite()) return;
+            if (dejaTraite() || dejaMontreeCetteSession()) return;
+            sessionStorage.setItem('wn-pwa-shown', '1');
 
             const modal = new bootstrap.Modal(document.getElementById('pwaInstallModal'));
             modal.show();
@@ -49,7 +57,7 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            if (dejaTraite() || !window.bootstrap) return;
+            if (dejaTraite() || dejaMontreeCetteSession() || !window.bootstrap) return;
 
             // Chrome peut déclencher cet évènement à n'importe quel moment, y compris
             // pendant qu'une autre fenêtre (ex. « Ajouter un document ») est ouverte :
