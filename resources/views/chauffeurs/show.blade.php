@@ -18,7 +18,7 @@
             <a href="{{ route('chauffeurs.badge', $chauffeur) }}" target="_blank" class="btn btn-dark px-4">
                 <i class='bx bx-id-card me-2'></i>Badge
             </a>
-            <a href="{{ route('chauffeurs.index') }}" class="btn btn-light px-4">
+            <a href="{{ url()->previous(route('chauffeurs.index')) }}" class="btn btn-light px-4">
                 <i class='bx bx-arrow-back me-2'></i>Retour
             </a>
         </div>

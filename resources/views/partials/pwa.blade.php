@@ -26,10 +26,9 @@
         let deferredPrompt = null;
         const dejaTraite = () => localStorage.getItem('wn-pwa-installed') === '1';
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (dejaTraite() || !window.bootstrap) return;
+        function afficherPwaModal() {
+            if (dejaTraite()) return;
+
             const modal = new bootstrap.Modal(document.getElementById('pwaInstallModal'));
             modal.show();
 
@@ -45,8 +44,41 @@
             document.getElementById('pwaLaterBtn').addEventListener('click', () => {
                 localStorage.setItem('wn-pwa-installed', '1');
             }, { once: true });
+        }
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (dejaTraite() || !window.bootstrap) return;
+
+            // Chrome peut déclencher cet évènement à n'importe quel moment, y compris
+            // pendant qu'une autre fenêtre (ex. « Ajouter un document ») est ouverte :
+            // deux fenêtres Bootstrap superposées cachent alors les champs du dessous.
+            // On attend que la page soit libre avant de proposer l'installation.
+            if (document.querySelector('.modal.show')) {
+                document.addEventListener('hidden.bs.modal', function reessayer() {
+                    if (document.querySelector('.modal.show')) return;
+                    document.removeEventListener('hidden.bs.modal', reessayer);
+                    afficherPwaModal();
+                });
+                return;
+            }
+
+            afficherPwaModal();
         });
 
         window.addEventListener('appinstalled', () => localStorage.setItem('wn-pwa-installed', '1'));
+
+        // Sécurité dans l'autre sens : si l'invite s'est affichée avant que
+        // l'utilisateur n'ouvre une autre fenêtre (ex. juste après le chargement
+        // de la page), on la referme dès qu'une autre fenêtre doit s'afficher,
+        // pour ne jamais avoir deux fenêtres superposées.
+        document.addEventListener('show.bs.modal', (e) => {
+            const pwaModalEl = document.getElementById('pwaInstallModal');
+            if (e.target === pwaModalEl) return;
+            if (pwaModalEl.classList.contains('show')) {
+                bootstrap.Modal.getInstance(pwaModalEl)?.hide();
+            }
+        });
     })();
 </script>

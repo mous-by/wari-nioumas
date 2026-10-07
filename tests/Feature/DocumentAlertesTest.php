@@ -173,6 +173,38 @@ class DocumentAlertesTest extends TestCase
         $response->assertSessionMissing('avertissement');
     }
 
+    public function test_retour_button_goes_back_to_the_documents_page_when_that_is_where_you_came_from(): void
+    {
+        // Sans ce correctif, « Retour » ramenait toujours à /vehicules et
+        // /chauffeurs, même en arrivant depuis la page Documents & échéances.
+        $user = $this->userWithRole('directeur_general');
+        $vehicule = Vehicule::factory()->create();
+        $chauffeur = Chauffeur::factory()->create();
+
+        $this->actingAs($user)->get('/documents');
+
+        $this->actingAs($user)->get("/vehicules/{$vehicule->id}")
+            ->assertOk()
+            ->assertSee('href="'.route('documents.index').'"', false);
+
+        $this->actingAs($user)->get('/documents');
+
+        $this->actingAs($user)->get("/chauffeurs/{$chauffeur->id}")
+            ->assertOk()
+            ->assertSee('href="'.route('documents.index').'"', false);
+    }
+
+    public function test_retour_button_falls_back_to_the_list_when_there_is_no_previous_page(): void
+    {
+        $user = $this->userWithRole('directeur_general');
+        $vehicule = Vehicule::factory()->create();
+
+        // Premiere requete de la session de test : aucune page precedente enregistree.
+        $this->actingAs($user)->get("/vehicules/{$vehicule->id}")
+            ->assertOk()
+            ->assertSee('href="'.route('vehicules.index').'"', false);
+    }
+
     public function test_affectation_does_not_block_when_documents_are_expired(): void
     {
         // L'avertissement est informatif : il ne doit jamais empêcher la

@@ -15,7 +15,7 @@
             </nav>
         </div>
         <div class="ms-auto">
-            <a href="{{ route('vehicules.index') }}" class="btn btn-light px-4">
+            <a href="{{ url()->previous(route('vehicules.index')) }}" class="btn btn-light px-4">
                 <i class='bx bx-arrow-back me-2'></i>Retour
             </a>
         </div>
