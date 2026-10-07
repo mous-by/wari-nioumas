@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Chauffeur;
+use App\Models\Document;
 use App\Http\Requests\StoreChauffeurRequest;
 use App\Http\Requests\UpdateChauffeurRequest;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -40,11 +41,17 @@ class ChauffeurController extends Controller
             'user_id' => auth()->id(),
         ]);
 
+        // Alimente automatiquement la surveillance des échéances (voir
+        // module Documents) à partir du permis saisi dans ce formulaire.
+        Document::enregistrerPermis($chauffeur, auth()->id());
+
         return redirect()->route('chauffeurs.index')->with('status', 'Chauffeur ajouté avec succès.');
     }
 
     public function show(Chauffeur $chauffeur): View
     {
+        $chauffeur->load('documents.historiques.user');
+
         return view('chauffeurs.show', [
             'chauffeur' => $chauffeur,
             'vehiculeActuel' => $chauffeur->vehiculeActuel(),
@@ -74,15 +81,20 @@ class ChauffeurController extends Controller
             ]);
         }
 
+        Document::enregistrerPermis($chauffeur, auth()->id());
+
         return redirect()->route('chauffeurs.index')->with('status', 'Chauffeur mis à jour avec succès.');
     }
 
     public function destroy(Chauffeur $chauffeur): RedirectResponse
     {
-        // Le chauffeur emporte ses affectations et son historique de statuts.
+        // Le chauffeur emporte ses affectations, son historique de statuts et
+        // ses documents (permis compris : pas de contrainte de clé étrangère
+        // possible sur une relation polymorphique, donc suppression manuelle).
         DB::transaction(function () use ($chauffeur) {
             $chauffeur->affectations()->delete();
             $chauffeur->statutHistoriques()->delete();
+            $chauffeur->documents()->delete();
             $chauffeur->delete();
         });
 

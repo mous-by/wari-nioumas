@@ -114,6 +114,8 @@
         </div>
 
         <div class="col-12 col-lg-7">
+            @include('documents._section', ['documentable' => $chauffeur])
+
             <div class="card">
                 <div class="card-header card-header-brand">
                     <h6 class="text-white mb-0"><i class='bx bx-history me-2'></i>HISTORIQUE DES STATUTS</h6>

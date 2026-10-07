@@ -100,6 +100,8 @@
         </div>
 
         <div class="col-12 col-lg-7">
+            @include('documents._section', ['documentable' => $vehicule])
+
             <div class="card">
                 <div class="card-header card-header-brand">
                     <h6 class="text-white mb-0"><i class='bx bx-transfer-alt me-2'></i>HISTORIQUE DES AFFECTATIONS</h6>

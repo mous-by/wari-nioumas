@@ -61,6 +61,26 @@
             </div>
         </div>
         <div class="col">
+            <a href="{{ route('documents.index') }}" class="text-decoration-none">
+                <div class="card radius-10 {{ $documentsExpires > 0 ? 'bg-danger' : ($documentsASurveiller > 0 ? 'bg-warning' : 'bg-light') }} bg-gradient">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div>
+                                <p class="mb-0 {{ $documentsExpires > 0 ? 'text-white' : 'text-dark' }}">Documents à surveiller</p>
+                                <h4 class="my-1 {{ $documentsExpires > 0 ? 'text-white' : 'text-dark' }}">
+                                    {{ $documentsASurveiller }}
+                                    @if ($documentsExpires > 0)
+                                        <small>({{ $documentsExpires }} expiré(s))</small>
+                                    @endif
+                                </h4>
+                            </div>
+                            <div class="{{ $documentsExpires > 0 ? 'text-white' : 'text-dark' }} ms-auto font-35"><i class='bx bx-file'></i></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col">
             <div class="card radius-10 bg-success bg-gradient">
                 <div class="card-body">
                     <div class="d-flex align-items-center">

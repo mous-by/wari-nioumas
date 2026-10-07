@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Accident;
 use App\Models\Chauffeur;
 use App\Models\Depense;
+use App\Models\Document;
 use App\Models\Incident;
 use App\Models\Personnel;
 use App\Models\User;
@@ -30,6 +31,8 @@ class DashboardController extends Controller
             'accidentsAnnee' => Accident::whereBetween('date_accident', [$now->copy()->startOfYear(), $now->copy()->endOfYear()])->count(),
             'incidentsAnnee' => Incident::whereBetween('date_incident', [$now->copy()->startOfYear(), $now->copy()->endOfYear()])->count(),
             'masseSalariale' => (float) Personnel::where('statut', 'actif')->sum('salaire_base'),
+            'documentsExpires' => Document::expires()->count(),
+            'documentsASurveiller' => Document::expirantDansLesJours(Document::SEUIL_ATTENTION_JOURS)->count(),
             // Tableaux de filtrage rapide (10 derniers enregistrements)
             'derniersVersements' => Versement::with('chauffeur')->latest('date_versement')->latest('id')->limit(10)->get(),
             'dernieresDepenses' => Depense::with('vehicule')->latest('date_depense')->latest('id')->limit(10)->get(),

@@ -38,6 +38,11 @@
                 icon: 'error', text: @json(session('error')),
             }));
         @endif
+        @if (session('avertissement'))
+            window.addEventListener('DOMContentLoaded', () => Swal.fire({
+                icon: 'warning', text: @json(session('avertissement')), confirmButtonText: 'Compris',
+            }));
+        @endif
     </script>
 </body>
 </html>

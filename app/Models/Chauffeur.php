@@ -109,6 +109,11 @@ class Chauffeur extends Model
         return $this->hasMany(Absence::class);
     }
 
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable')->orderByRaw('date_expiration IS NULL')->orderBy('date_expiration');
+    }
+
     /**
      * Tous les voyages effectués par ce chauffeur, toutes affectations
      * confondues (même après un changement de véhicule).

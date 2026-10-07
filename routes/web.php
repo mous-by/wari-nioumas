@@ -11,6 +11,7 @@ use App\Http\Controllers\CasSocialController;
 use App\Http\Controllers\ChauffeurController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepenseController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\MandatController;
@@ -130,6 +131,16 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('permission:vehicules.supprimer')->group(function () {
         Route::delete('/vehicules/{vehicule}', [VehiculeController::class, 'destroy'])->name('vehicules.destroy');
+    });
+
+    Route::middleware('permission:documents.voir')->group(function () {
+        Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    });
+
+    Route::middleware('permission:documents.gerer')->group(function () {
+        Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+        Route::put('/documents/{document}', [DocumentController::class, 'update'])->name('documents.update');
+        Route::delete('/documents/{document}', [DocumentController::class, 'destroy'])->name('documents.destroy');
     });
 
     Route::middleware('permission:affectations.voir')->group(function () {

@@ -15,6 +15,12 @@
             ['t' => 'Fiche chauffeur', 'img' => '04-chauffeur-fiche', 'd' => "La fiche récapitule les informations du chauffeur, son <strong>véhicule actuellement affecté</strong> et l'<strong>historique de ses statuts</strong>."],
             ['t' => 'Véhicules', 'img' => '05-vehicules', 'd' => "Le parc automobile : immatriculation, marque/modèle, type, année et état (actif, garage, vendu…). Chaque changement d'état est historisé. Supprimer un véhicule supprime aussi ses affectations."],
             ['t' => 'Affectations', 'img' => '06-affectations', 'd' => "Qui conduit quel véhicule, et le <strong>montant journalier</strong> à reverser. Réaffecter clôture automatiquement l'ancienne affectation."],
+            ['t' => 'Documents & échéances', 'img' => '25-documents', 'd' => "Carte grise, assurance, vignette de chaque véhicule, et <strong>permis de conduite</strong> de chaque chauffeur (suivi automatiquement, sans rien à saisir en plus du formulaire habituel). L'application calcule seule le délai avant expiration.",
+             'p' => [
+                "Trois niveaux d'alerte : <strong>à surveiller</strong> (30 jours), <strong>échéance proche</strong> (7 jours), <strong>expiré</strong> — visibles dans la cloche 🔔, le tableau de bord et cette page.",
+                "Un document expiré affiche un avertissement au moment d'affecter le véhicule ou le chauffeur concerné, sans bloquer l'affectation.",
+                "Chaque renouvellement peut joindre une copie numérisée (PDF, JPG, PNG) et conserve l'ancienne échéance.",
+            ]],
         ]],
         ['cat' => 'Recettes & absences', 'items' => [
             ['t' => 'Recettes (compte à rebours)', 'img' => '07-recettes', 'd' => "Le montant dû par chaque chauffeur <strong>s'accumule tout seul chaque jour</strong> (montant journalier × jours écoulés, moins les jours d'absence acceptée). On n'enregistre que les <strong>versements</strong> ; le solde reste toujours à jour.",
@@ -104,7 +110,7 @@
             <h6 class="text-white mb-0"><i class='bx bx-book-open me-2'></i>GUIDE D'UTILISATION — WARI NIOUMA</h6>
         </div>
         <div class="card-body">
-            <p class="mb-2">WARI NIOUMA centralise toute la gestion de l'entreprise : le parc (chauffeurs et véhicules), l'exploitation (affectations, recettes, absences), les charges (dépenses, accidents, incidents), la trésorerie (caisse, finances) et les ressources humaines (personnel, bulletins, mandats de paiement).</p>
+            <p class="mb-2">WARI NIOUMA centralise toute la gestion de l'entreprise : le parc (chauffeurs et véhicules) et le suivi de leurs documents administratifs, l'exploitation (affectations, recettes, absences), les charges (dépenses, accidents, incidents), la trésorerie (caisse, finances) et les ressources humaines (personnel, bulletins, mandats de paiement).</p>
             <p class="mb-3 text-muted">La sécurité repose sur les <strong>rôles</strong> : chaque personne ne voit et n'utilise que ce que son rôle autorise. Les actions les plus sensibles passent par la <strong>validation du Directeur général</strong>.</p>
             <div class="d-flex flex-wrap gap-2">
                 @foreach (['Directeur général','Gestionnaire','Comptable','Caissier','Responsable du parc'] as $role)

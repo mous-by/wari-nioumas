@@ -35,6 +35,15 @@
             </li>
         @endcan
 
+        @can('documents.voir')
+            <li>
+                <a href="{{ route('documents.index') }}" class="{{ request()->routeIs('documents.*') ? 'mm-active' : '' }}">
+                    <div class="parent-icon"><i class='bx bx-file'></i></div>
+                    <div class="menu-title">Documents &amp; échéances</div>
+                </a>
+            </li>
+        @endcan
+
         @can('affectations.voir')
             <li>
                 <a href="{{ route('affectations.index') }}" class="{{ request()->routeIs('affectations.*') ? 'mm-active' : '' }}">

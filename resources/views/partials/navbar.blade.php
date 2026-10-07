@@ -2,6 +2,18 @@
     $validationsEnAttente = auth()->user()->can('validations.voir')
         ? \App\Models\Validation::enAttente()->with('demandeur')->latest()->limit(10)->get()
         : collect();
+
+    // Documents expirés ou arrivant bientôt à échéance (≤ 30 jours) : les
+    // expirés d'abord, puis par échéance la plus proche.
+    $documentsASurveiller = auth()->user()->can('documents.voir')
+        ? \App\Models\Document::with('documentable')
+            ->whereNotNull('date_expiration')
+            ->whereDate('date_expiration', '<=', now()->copy()->addDays(\App\Models\Document::SEUIL_ATTENTION_JOURS))
+            ->orderBy('date_expiration')
+            ->limit(10)
+            ->get()
+        : collect();
+    $nbNotifications = $validationsEnAttente->count() + $documentsASurveiller->count();
 @endphp
 <header>
     <div class="topbar d-flex align-items-center">
@@ -21,10 +33,10 @@
                     <li class="nav-item dropdown dropdown-large">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class='bx bx-bell'></i>
-                            @if ($validationsEnAttente->isNotEmpty())
+                            @if ($nbNotifications > 0)
                                 <span class="position-absolute translate-middle badge rounded-pill bg-danger" style="top:8px; left:26px; font-size:.62rem;">
-                                    {{ $validationsEnAttente->count() }}
-                                    <span class="visually-hidden">validations en attente</span>
+                                    {{ $nbNotifications }}
+                                    <span class="visually-hidden">notifications</span>
                                 </span>
                             @endif
                         </a>
@@ -32,8 +44,8 @@
                             <a href="javascript:;">
                                 <div class="msg-header">
                                     <p class="msg-header-title">Notifications</p>
-                                    @if ($validationsEnAttente->isNotEmpty())
-                                        <span class="badge bg-warning text-dark ms-auto">{{ $validationsEnAttente->count() }} en attente</span>
+                                    @if ($nbNotifications > 0)
+                                        <span class="badge bg-warning text-dark ms-auto">{{ $nbNotifications }}</span>
                                     @endif
                                 </div>
                             </a>
@@ -52,12 +64,44 @@
                                         </div>
                                     </a>
                                 @empty
+                                @endforelse
+
+                                @foreach ($documentsASurveiller as $document)
+                                    @php
+                                        $expire = $document->statut === 'expire';
+                                        $lien = $document->documentable instanceof \App\Models\Vehicule
+                                            ? route('vehicules.show', $document->documentable)
+                                            : ($document->documentable ? route('chauffeurs.show', $document->documentable) : route('documents.index'));
+                                    @endphp
+                                    <a class="dropdown-item" href="{{ $lien }}">
+                                        <div class="d-flex align-items-center">
+                                            <div class="notify {{ $expire ? 'bg-light-danger text-danger' : 'bg-light-warning text-warning' }}">
+                                                <i class="bx {{ $expire ? 'bx-error-circle' : 'bx-time-five' }}"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <h6 class="msg-name mb-0">
+                                                    {{ $expire ? 'Document expiré' : 'Échéance proche' }}
+                                                </h6>
+                                                <span class="msg-info">
+                                                    {{ $document->type_libelle }} — {{ $document->proprietaire_libelle }}
+                                                    {{ $expire ? 'expiré depuis '.abs($document->jours_restants).' j' : 'dans '.$document->jours_restants.' j' }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                @endforeach
+
+                                @if ($validationsEnAttente->isEmpty() && $documentsASurveiller->isEmpty())
                                     <div class="dropdown-item text-center text-muted py-4">
                                         Aucune notification pour le moment
                                     </div>
-                                @endforelse
+                                @endif
                             </div>
-                            @if ($validationsEnAttente->isNotEmpty())
+                            @if ($documentsASurveiller->isNotEmpty())
+                                <a href="{{ route('documents.index') }}">
+                                    <div class="text-center msg-footer fw-semibold text-primary py-2">Voir tous les documents</div>
+                                </a>
+                            @elseif ($validationsEnAttente->isNotEmpty())
                                 <a href="{{ route('validations.index') }}">
                                     <div class="text-center msg-footer fw-semibold text-primary py-2">Voir toutes les validations</div>
                                 </a>

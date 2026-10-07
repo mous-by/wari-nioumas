@@ -33,6 +33,8 @@ class VehiculeController extends Controller
 
     public function show(Vehicule $vehicule): View
     {
+        $vehicule->load('documents.historiques.user');
+
         return view('vehicules.show', [
             'vehicule' => $vehicule,
             'chauffeurActuel' => $vehicule->chauffeurActuel(),
@@ -59,11 +61,13 @@ class VehiculeController extends Controller
 
     public function destroy(Vehicule $vehicule): RedirectResponse
     {
-        // Le véhicule emporte avec lui ses affectations et son historique d'états,
-        // pour ne laisser aucune référence orpheline (ex. page Affectations).
+        // Le véhicule emporte avec lui ses affectations, son historique d'états
+        // et ses documents, pour ne laisser aucune référence orpheline (ex.
+        // page Affectations ou module Documents).
         DB::transaction(function () use ($vehicule) {
             $vehicule->affectations()->delete();
             $vehicule->etatHistoriques()->delete();
+            $vehicule->documents()->delete();
             $vehicule->delete();
         });
 

@@ -39,4 +39,9 @@ class Vehicule extends Model
     {
         return $this->affectationActive?->chauffeur;
     }
+
+    public function documents()
+    {
+        return $this->morphMany(Document::class, 'documentable')->orderByRaw('date_expiration IS NULL')->orderBy('date_expiration');
+    }
 }

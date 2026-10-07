@@ -57,7 +57,37 @@ class AffectationController extends Controller
             Affectation::create([...$data, 'user_id' => auth()->id()]);
         });
 
-        return redirect()->route('affectations.index')->with('status', 'Affectation enregistrée avec succès.');
+        $avertissement = $this->avertissementDocuments(
+            Vehicule::find($data['vehicule_id']),
+            Chauffeur::find($data['chauffeur_id']),
+        );
+
+        $redirect = redirect()->route('affectations.index')->with('status', 'Affectation enregistrée avec succès.');
+
+        return $avertissement ? $redirect->with('avertissement', $avertissement) : $redirect;
+    }
+
+    /**
+     * Avertissement non bloquant quand le véhicule ou le chauffeur affecté a
+     * au moins un document expiré (carte grise, assurance, vignette, permis).
+     * Ne bloque pas l'affectation : alerte la direction pour qu'elle vérifie.
+     */
+    private function avertissementDocuments(?Vehicule $vehicule, ?Chauffeur $chauffeur): ?string
+    {
+        $messages = [];
+
+        if ($vehicule && $vehicule->documents()->expires()->exists()) {
+            $messages[] = "le véhicule {$vehicule->immatriculation} possède un document expiré";
+        }
+        if ($chauffeur && $chauffeur->documents()->expires()->exists()) {
+            $messages[] = "le chauffeur {$chauffeur->nom_complet} possède un document expiré (permis ou autre)";
+        }
+
+        if (! $messages) {
+            return null;
+        }
+
+        return 'Attention : '.implode(' et ', $messages).'. Vérification nécessaire avant son utilisation.';
     }
 
     /**
@@ -75,9 +105,14 @@ class AffectationController extends Controller
         $affectation1 = Affectation::where('chauffeur_id', $data['chauffeur_1_id'])->whereNull('date_fin')->firstOrFail();
         $affectation2 = Affectation::where('chauffeur_id', $data['chauffeur_2_id'])->whereNull('date_fin')->firstOrFail();
 
-        DB::transaction(function () use ($data, $affectation1, $affectation2) {
-            $vehicule1 = $affectation1->vehicule_id;
-            $vehicule2 = $affectation2->vehicule_id;
+        // Capturés avant la transaction : utilisés aussi après coup pour
+        // l'avertissement sur les documents, une fois les véhicules permutés.
+        $vehicule1Id = $affectation1->vehicule_id;
+        $vehicule2Id = $affectation2->vehicule_id;
+
+        DB::transaction(function () use ($data, $affectation1, $affectation2, $vehicule1Id, $vehicule2Id) {
+            $vehicule1 = $vehicule1Id;
+            $vehicule2 = $vehicule2Id;
             $chauffeur1 = $affectation1->chauffeur;
             $chauffeur2 = $affectation2->chauffeur;
 
@@ -110,7 +145,13 @@ class AffectationController extends Controller
             ]);
         });
 
-        return redirect()->route('affectations.index')->with('status', 'Permutation effectuée avec succès.');
+        $avertissement1 = $this->avertissementDocuments(Vehicule::find($vehicule2Id), Chauffeur::find($data['chauffeur_1_id']));
+        $avertissement2 = $this->avertissementDocuments(Vehicule::find($vehicule1Id), Chauffeur::find($data['chauffeur_2_id']));
+        $avertissement = collect([$avertissement1, $avertissement2])->filter()->implode(' ');
+
+        $redirect = redirect()->route('affectations.index')->with('status', 'Permutation effectuée avec succès.');
+
+        return $avertissement ? $redirect->with('avertissement', $avertissement) : $redirect;
     }
 
     public function update(UpdateAffectationRequest $request, Affectation $affectation): RedirectResponse
