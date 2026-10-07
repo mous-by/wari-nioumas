@@ -119,7 +119,13 @@
                         <tbody>
                             @forelse ($vehicule->affectations as $affectation)
                                 <tr>
-                                    <td><a href="{{ route('chauffeurs.show', $affectation->chauffeur) }}">{{ $affectation->chauffeur->nom_complet }}</a></td>
+                                    <td>
+                                        @if ($affectation->chauffeur)
+                                            <a href="{{ route('chauffeurs.show', $affectation->chauffeur) }}">{{ $affectation->chauffeur->nom_complet }}</a>
+                                        @else
+                                            <span class="text-muted">Chauffeur supprimé</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $affectation->date_debut->format('d/m/Y') }}</td>
                                     <td>{{ $affectation->date_fin?->format('d/m/Y') ?? '—' }}</td>
                                     <td>

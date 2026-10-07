@@ -321,6 +321,48 @@ class DocumentManagementTest extends TestCase
         $this->assertSame('2031-06-01', $chauffeur->permis_date_validite->toDateString());
     }
 
+    public function test_permis_conduite_stays_in_the_add_document_dropdown_even_once_tracked(): void
+    {
+        // Sinon, pour tout chauffeur (le permis est toujours déjà suivi), le
+        // menu « Type de document » ne proposait plus que « Autre document » :
+        // une seule option, qui donnait l'impression d'un menu vide/cassé.
+        $user = $this->userWithRole('responsable_parc');
+        $chauffeur = Chauffeur::factory()->create();
+        Document::enregistrerPermis($chauffeur, $user->id);
+
+        $html = $this->actingAs($user)->get("/chauffeurs/{$chauffeur->id}")->assertOk()->getContent();
+
+        $this->assertStringContainsString('<option value="permis_conduite">Permis de conduite</option>', $html);
+        $this->assertStringContainsString('<option value="autre">Autre document</option>', $html);
+    }
+
+    public function test_choosing_permis_conduite_again_from_add_document_renews_the_existing_one(): void
+    {
+        $user = $this->userWithRole('responsable_parc');
+        $chauffeur = Chauffeur::factory()->create(['permis_numero' => 'PC-OLD', 'permis_date_validite' => '2026-01-01']);
+        Document::enregistrerPermis($chauffeur, $user->id);
+
+        $this->actingAs($user)->post('/documents', [
+            'documentable_type' => 'chauffeur',
+            'documentable_id' => $chauffeur->id,
+            'type_document' => 'permis_conduite',
+            'numero' => 'PC-RENOUVELE',
+            'date_expiration' => '2029-01-01',
+        ])->assertRedirect();
+
+        // Toujours un seul document "permis_conduite" pour ce chauffeur, mis à jour.
+        $this->assertSame(1, Document::where('documentable_id', $chauffeur->id)->where('type_document', 'permis_conduite')->count());
+        $document = Document::where('documentable_id', $chauffeur->id)->where('type_document', 'permis_conduite')->firstOrFail();
+        $this->assertSame('PC-RENOUVELE', $document->numero);
+        $this->assertSame('2029-01-01', $document->date_expiration->toDateString());
+
+        $chauffeur->refresh();
+        $this->assertSame('PC-RENOUVELE', $chauffeur->permis_numero);
+        $this->assertSame('2029-01-01', $chauffeur->permis_date_validite->toDateString());
+
+        $this->assertSame(1, DocumentHistorique::count());
+    }
+
     public function test_permis_document_cannot_be_deleted_from_its_own_fiche(): void
     {
         $user = $this->userWithRole('directeur_general');

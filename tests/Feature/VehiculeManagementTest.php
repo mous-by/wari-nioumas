@@ -105,4 +105,19 @@ class VehiculeManagementTest extends TestCase
         // et la page Affectations ne plante plus
         $this->actingAs($user)->get('/affectations')->assertOk();
     }
+
+    public function test_fiche_still_loads_when_an_affectation_points_to_a_chauffeur_that_no_longer_exists(): void
+    {
+        $user = $this->userWithRole('directeur_general');
+        $vehicule = Vehicule::factory()->create();
+        $chauffeur = Chauffeur::factory()->create();
+        Affectation::factory()->create(['vehicule_id' => $vehicule->id, 'chauffeur_id' => $chauffeur->id]);
+        // Suppression douce du modèle directement (sans passer par le
+        // contrôleur) : la ligne affectation reste, comme dans le cas réel.
+        $chauffeur->delete();
+
+        $html = $this->actingAs($user)->get("/vehicules/{$vehicule->id}")->assertOk()->getContent();
+
+        $this->assertStringContainsString('Chauffeur supprimé', $html);
+    }
 }

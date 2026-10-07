@@ -2,7 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Affectation;
 use App\Models\Chauffeur;
+use App\Models\Vehicule;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -116,5 +118,25 @@ class ChauffeurManagementTest extends TestCase
         $this->actingAs($user)->delete("/chauffeurs/{$chauffeur->id}")->assertForbidden();
 
         $this->assertNotSoftDeleted('chauffeurs', ['id' => $chauffeur->id]);
+    }
+
+    public function test_fiche_still_loads_when_an_affectation_points_to_a_vehicule_that_no_longer_exists(): void
+    {
+        // Reproduit un plantage réel : une affectation historique référence un
+        // véhicule devenu introuvable (supprimé autrement qu'en passant par
+        // VehiculeController::destroy(), qui lui nettoie ses affectations —
+        // ex. une suppression faite directement en base). La page ne doit
+        // pas planter avec "Missing required parameter [vehicule]".
+        $user = $this->userWithRole('directeur_general');
+        $chauffeur = Chauffeur::factory()->create();
+        $vehicule = Vehicule::factory()->create();
+        Affectation::factory()->create(['chauffeur_id' => $chauffeur->id, 'vehicule_id' => $vehicule->id]);
+        // Suppression douce du modèle directement (sans passer par le
+        // contrôleur) : la ligne affectation reste, comme dans le cas réel.
+        $vehicule->delete();
+
+        $html = $this->actingAs($user)->get("/chauffeurs/{$chauffeur->id}")->assertOk()->getContent();
+
+        $this->assertStringContainsString('Véhicule supprimé', $html);
     }
 }

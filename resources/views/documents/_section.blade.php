@@ -4,13 +4,12 @@
     $documentableType = $estVehicule ? 'vehicule' : 'chauffeur';
     $typesDisponibles = \App\Models\Document::typesPour($documentable->getMorphClass());
 
-    // Le permis de conduite existe toujours déjà (créé automatiquement avec le
-    // chauffeur) : on ne le propose plus dans « Ajouter », seul « Renouveler »
-    // sur sa ligne permet de le mettre à jour.
-    $dejaPermis = ! $estVehicule && $documentable->documents->contains('type_document', 'permis_conduite');
-    if ($dejaPermis) {
-        $typesDisponibles = collect($typesDisponibles)->except('permis_conduite')->all();
-    }
+    // Le permis de conduite existe toujours déjà pour un chauffeur (créé
+    // automatiquement à sa création) : il reste proposé dans « Ajouter » —
+    // le choisir renouvelle simplement le permis existant plutôt que d'en
+    // créer un second (voir Document::enregistrerPermis) — pour que le menu
+    // ne se réduise jamais à une seule option (source de confusion : on
+    // dirait alors qu'il ne propose plus rien).
 @endphp
 
 <div class="card mb-3">
