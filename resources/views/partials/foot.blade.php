@@ -16,11 +16,16 @@
 <script>
     // Rendre TOUS les tableaux DataTables lisibles sur mobile : défilement
     // horizontal (toutes les colonnes + boutons restent accessibles au doigt)
-    // + libellés FR. (scrollX est fiable avec DataTables 1.10, contrairement à
-    // l'extension Responsive qui exige une version plus récente.)
+    // + libellés FR.
+    // Pas de scrollX : avec cette version de DataTables (1.10.18, antérieure
+    // à Bootstrap 5), l'en-tête "cloné" qu'il crée pour rester fixe au
+    // défilement se superposait mal à l'en-tête réel — visible en clair si on
+    // sélectionne/copie la page (en-tête présent deux fois), et sous la forme
+    // d'une bande vide à l'écran. Le défilement horizontal passe plutôt par
+    // .table-responsive (CSS pur, déjà utilisé pour les tableaux hors
+    // DataTables juste plus bas), fiable quelle que soit la version.
     if ($.fn.dataTable) {
         $.extend(true, $.fn.dataTable.defaults, {
-            scrollX: true,
             autoWidth: false,
             language: {
                 search: 'Rechercher :',
@@ -35,11 +40,13 @@
         });
     }
 
-    // Tableaux « simples » (non DataTables : pages détail/rapport) : on les rend
-    // scrollables horizontalement sur mobile en les enveloppant dans .table-responsive.
+    // Tous les tableaux (DataTables compris, scrollX étant désactivé ci-dessus)
+    // sont rendus scrollables horizontalement sur mobile en les enveloppant
+    // dans .table-responsive : les colonnes restent accessibles au doigt sans
+    // que la page entière ne défile.
     window.addEventListener('load', function () {
         document.querySelectorAll('table.table').forEach(function (t) {
-            if (t.closest('.table-responsive') || t.closest('.dataTables_wrapper')) return;
+            if (t.closest('.table-responsive')) return;
             const wrap = document.createElement('div');
             wrap.className = 'table-responsive';
             t.parentNode.insertBefore(wrap, t);
