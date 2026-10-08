@@ -103,7 +103,7 @@
                 <tbody>
                     @forelse ($documents as $document)
                         <tr data-statut="{{ $document->statut }}">
-                            <td>{{ $document->proprietaire_libelle }}</td>
+                            <td data-nom="{{ $document->proprietaire_libelle }}">{{ $document->proprietaire_libelle }}</td>
                             <td>{{ $document->documentable_type === \App\Models\Vehicule::class ? 'Véhicule' : 'Chauffeur' }}</td>
                             <td>{{ $document->type_libelle }}</td>
                             <td>{{ $document->date_expiration?->format('d/m/Y') ?? '—' }}</td>
@@ -160,6 +160,36 @@
                 filtreActif = $(this).data('filtre');
                 table.draw();
             });
+
+            // Évite de répéter le même propriétaire sur chaque ligne quand il a
+            // plusieurs documents (ex. ALY KAMISSOKO sur 3 lignes) : le nom ne
+            // s'affiche que sur la première ligne du groupe, les suivantes sont
+            // rattachées visuellement (bordure retirée entre elles). Uniquement
+            // quand le tri est sur la colonne Propriétaire : avec un autre tri,
+            // les lignes d'une même personne ne se suivent plus forcément, et
+            // les regrouper visuellement induirait en erreur.
+            table.on('draw', function () {
+                const trieParProprietaire = (table.order()[0] || [])[0] === 0;
+                let nomPrecedent = null;
+
+                table.rows({ page: 'current' }).nodes().each(function (tr) {
+                    const cellule = tr.querySelector('td[data-nom]');
+                    if (!cellule) { nomPrecedent = null; return; }
+
+                    const memeGroupe = trieParProprietaire && cellule.dataset.nom === nomPrecedent;
+                    cellule.textContent = memeGroupe ? '' : cellule.dataset.nom;
+                    tr.classList.toggle('ligne-regroupee', memeGroupe);
+                    nomPrecedent = cellule.dataset.nom;
+                });
+            }).draw(false);
         })();
     </script>
+@endpush
+
+@push('styles')
+    <style>
+        /* Rapproche visuellement les lignes d'un même propriétaire regroupées. */
+        #documents-table tr.ligne-regroupee > td { border-top: none; padding-top: 0; }
+        #documents-table tr:has(+ tr.ligne-regroupee) > td { padding-bottom: 0; }
+    </style>
 @endpush

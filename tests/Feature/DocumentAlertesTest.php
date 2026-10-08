@@ -39,6 +39,20 @@ class DocumentAlertesTest extends TestCase
         ]);
     }
 
+    public function test_documents_index_rows_carry_the_owner_name_for_client_side_grouping(): void
+    {
+        // Le script de la page (regroupement des documents d'un même
+        // propriétaire) dépend de cet attribut data-nom : un garde-fou pour
+        // ne pas le perdre par inadvertance dans un futur changement de vue.
+        $user = $this->userWithRole('directeur_general');
+        $chauffeur = Chauffeur::factory()->create(['nom' => 'Traoré', 'prenom' => 'Ali']);
+        Document::enregistrerPermis($chauffeur, $user->id);
+
+        $html = $this->actingAs($user)->get('/documents')->assertOk()->getContent();
+
+        $this->assertStringContainsString('data-nom="Ali Traoré"', $html);
+    }
+
     public function test_caissier_can_view_but_not_manage_documents(): void
     {
         $user = $this->userWithRole('caissier');
